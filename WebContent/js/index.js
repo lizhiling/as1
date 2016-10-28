@@ -1,19 +1,21 @@
 var theme = getParam('theme');
 employeeList(parseInt(theme));
-saveTableContent($('#theme-list .active'), $("#emp-list tbody"));
-
+$('#print').on('click',function () {
+	window.print();
+});
 
 //------------------------------------------functions-----------------------------------------------//
 
 
-function saveTableContent(activeTheme, table) {
-	localStorage.setItem('themeId', activeTheme.attr('value'));
+function saveTableContent(table, onlySelectActiveRow) {
 	localStorage.setItem('date', new Date().toLocaleDateString());
-	localStorage.setItem('purpose', activeTheme.text());
 
 	var rows = $(table).find('tr');
 	var emps = [];
 	for (var i = 0; i < rows.length; i++) {
+		if(onlySelectActiveRow && !$(rows[i]).hasClass('active')){
+			continue;
+		}
 		var emp = {};
 		var tds = $(rows[i]).find('td');
 		for (var j = 0; j < tds.length; j++) {

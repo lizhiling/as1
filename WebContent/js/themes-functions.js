@@ -32,8 +32,11 @@ function welfareList(){
     }
 
     $('.summary-btn').hide();
-    $('#travel-allowance').show().on('click', function () {
 
+    saveTableContent($("#emp-list tbody"),false);
+    $('#travel-allowance').show().on('click', function () {
+        WelfareForm();
+        $('#funds-apply-form').modal('show');
     });
 }
 
@@ -42,11 +45,145 @@ function trainingList(){
 }
 
 function partyList(){
-    
+    var emp_list_tbody = $('#emp-list tbody');
+    var emp_list_header = $('#emp-list thead tr');
+    var cols = DB.getColumnsByThemeId(3);
+    emp_list_header.empty().append('<th></th><th>Number</th><th>Name</th>');
+    for (var j = 0; j < cols.length; j++) {
+        emp_list_header.append('<th>' + cols[j].alias + '</th>');
+    }
+    emp_list_tbody.empty();
+    var emps = DB.selectEmpsInfo(cols);
+    for (var i = 0; i < emps.length; i++) {
+        var emp = emps[i];
+        var tr = $('<tr></tr>');
+        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
+        tr.append('<td class="Number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
+        tr.append('<td class="Name">' + emp.name + '</td>');
+        for (var j = 0; j < cols.length; j++) {
+            var td = $("<td></td>");
+            var temp = emp[cols[j].cname];
+            if (cols[j].cname == 'sex') {
+                td.text(DB.choice(emp.sex));
+            } else if (cols[j].cname == 'position') {
+                td.text(DB.choice(emp.position));
+            }else {
+                td.text(temp);
+            }
+            td.addClass(cols[j].alias);
+            tr.append(td);
+        }
+        if ($(tr).find('.Position').text()!='Worker'){
+            tr.addClass('active');
+        }
+        tr.appendTo(emp_list_tbody);
+    }
+    // $('#emp-list tbody tr').on('click', function(event) {
+    //     $(this).toggleClass('active');
+    // });
+
+    $('.summary-btn').hide();
+    saveTableContent($("#emp-list tbody"),true);
+    $('#decide-party').show().on('click', function () {
+        $('#party-table').modal('show');
+        PartySummary();
+    });
 }
 
-function workerList() {
-    
+function workerListForDormitory(){
+    var emp_list_tbody = $('#emp-list tbody');
+    var emp_list_header = $('#emp-list thead tr');
+    var cols = [{type: 'emp', cname: 'sex', alias: 'Gender'},
+        {type: 'emp', cname: 'position', alias: 'Position'},
+        {type: 'addr', cname: 'zip', alias: 'Dormitory Zip'}];
+    emp_list_header.empty().append('<th></th><th>Number</th><th>Name</th>');
+    for (var j = 0; j < cols.length; j++) {
+        emp_list_header.append('<th>' + cols[j].alias + '</th>');
+    }
+    emp_list_tbody.empty();
+    var emps = DB.getDormitoryColumns();
+    for (var i = 0; i < emps.length; i++) {
+        var emp = emps[i];
+        var tr = $('<tr></tr>');
+        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
+        tr.append('<td class="Number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
+        tr.append('<td class="Name">' + emp.name + '</td>');
+        for (var j = 0; j < cols.length; j++) {
+            var td = $("<td></td>");
+            var temp = emp[cols[j].cname];
+            if (cols[j].cname == 'sex') {
+                td.text(DB.choice(emp.sex));
+            } else if (cols[j].cname == 'position') {
+                td.text(DB.choice(emp.position));
+            }else {
+                td.text(temp);
+            }
+            td.addClass(cols[j].alias);
+            tr.append(td);
+        }
+        if ($(tr).find('.Position').text()=='Worker' && $(tr).find('.Dormitory').text()==''){
+            tr.addClass('active');
+        }
+        tr.appendTo(emp_list_tbody);
+    }
+    // $('#emp-list tbody tr').on('click', function(event) {
+    //     $(this).toggleClass('active');
+    // });
+
+    $('.summary-btn').hide();
+    saveTableContent($("#emp-list tbody"),true);
+    $('#arrange-dormitory').show().on('click', function () {
+        $('#dormitory-table').modal('show');
+        DormitorySummary();
+    });
+
+}
+
+function workerListForWP() {
+    //todo: decide how to combine workerListForDormitory() and workerListForWP()
+    var emp_list_tbody = $('#emp-list tbody');
+    var emp_list_header = $('#emp-list thead tr');
+    var cols = DB.getColumnsByThemeId(5);
+    emp_list_header.empty().append('<th></th><th>Number</th><th>Name</th>');
+    for (var j = 0; j < cols.length; j++) {
+        emp_list_header.append('<th>' + cols[j].alias + '</th>');
+    }
+    emp_list_tbody.empty();
+    var emps = DB.getDormitoryColumns();
+    for (var i = 0; i < emps.length; i++) {
+        var emp = emps[i];
+        var tr = $('<tr></tr>');
+        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
+        tr.append('<td class="Number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
+        tr.append('<td class="Name">' + emp.name + '</td>');
+        for (var j = 0; j < cols.length; j++) {
+            var td = $("<td></td>");
+            var temp = emp[cols[j].cname];
+            if (cols[j].cname == 'sex') {
+                td.text(DB.choice(emp.sex));
+            } else if (cols[j].cname == 'position') {
+                td.text(DB.choice(emp.position));
+            }else {
+                td.text(temp);
+            }
+            td.addClass(cols[j].alias);
+            tr.append(td);
+        }
+        if ($(tr).find('.Position').text()=='Worker' && $(tr).find('.Dormitory').text()==''){
+            tr.addClass('active');
+        }
+        tr.appendTo(emp_list_tbody);
+    }
+    // $('#emp-list tbody tr').on('click', function(event) {
+    //     $(this).toggleClass('active');
+    // });
+
+    $('.summary-btn').hide();
+    saveTableContent($("#emp-list tbody"),true);
+    $('#arrange-dormitory').show().on('click', function () {
+        $('#dormitory-table').modal('show');
+        DormitorySummary();
+    });
 }
 
 function chooseProject() {
@@ -59,7 +196,7 @@ function employeeList(themeId){
         case 1: welfareList(); break;
         case 2: trainingList(); break;
         case 3: partyList(); break;
-        case 4: workerList(); break;
+        case 4: workerListForDormitory(); break;
         default: customizedList(); break;
     }
 }

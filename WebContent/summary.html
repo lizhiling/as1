@@ -9,6 +9,7 @@
     <script src="lib/jquery-ui.js"></script>
     <script src="lib/alasql.js"></script>
     <script src="js/db.js"></script>
+    <script src="js/unity-functions.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>COMPANY</title>
@@ -93,89 +94,7 @@
             </div>
         </div>
 
-        <div class="panel" id="dormitory" hidden>
-            <table class="table table-bordered">
-                <tr>
-                    <th>Number of Male Worker</th>
-                    <th>Number of Female Worker</th>
-                </tr>
-                <tr>
-                    <td id="male"></td>
-                    <td id="female"></td>
-                </tr>
-            </table>
-            <form>
-                <label for="rental">Rental</label>
-                <div class="input-group">
-                    <div class="input-group-addon">$</div>
-                    <input type="number" class="form-control" id="rental" placeholder="Rental per Room" required>
-                    <div class="input-group-addon">.00</div>
-                </div>
-                <br>
-                <br>
-                <button type="submit" class="btn btn-default">Apply Funds</button>
-            </form>
-        </div>
 
-        <div class="panel" id="party" hidden>
-            <table class="table table-bordered">
-                <tr>
-                    <th>Gender</th>
-                    <th>Age Range</th>
-                    <th>Number</th>
-                    <th>Percentage</th>
-                </tr>
-                <tr>
-                    <td rowspan="3">Male</td>
-                    <td>20-40</td>
-                    <td id="m20"></td>
-                    <td id="m20p"></td>
-                </tr>
-                <tr>
-                    <td>40-60</td>
-                    <td id="m40"></td>
-                    <td id="m40p"></td>
-                </tr>
-                <tr>
-                    <td>60+</td>
-                    <td id="m60"></td>
-                    <td id="m60p"></td>
-                </tr>
-                <tr>
-                    <td rowspan="3">Female</td>
-                    <td>20-40</td>
-                    <td id="f20"></td>
-                    <td id="f20p"></td>
-                </tr>
-                <tr>
-                    <td>40-60</td>
-                    <td id="f40"></td>
-                    <td id="f40p"></td>
-                </tr>
-                <tr>
-                    <td>60+</td>
-                    <td id="f60"></td>
-                    <td id="f60p"></td>
-                </tr>
-            </table>
-            <form>
-                <label for="party-content">Party Content</label>
-                <input type="text" class="form-control" id="party-content" placeholder="Content of staff party"
-                       required><br>
-
-                <label for="party-amount">Amount</label>
-                <div class="input-group">
-                    <div class="input-group-addon">$</div>
-                    <input type="number" class="form-control" id="party-amount" placeholder="Amount per person"
-                           required>
-                    <div class="input-group-addon">.00</div>
-                </div>
-                <br>
-                <br>
-                <button type="submit" class="btn btn-default">Apply Funds</button>
-            </form>
-        </div>
-    </div>
 
     <div class="modal fade" tabindex="-1" role="dialog" id="funds-apply-form">
         <div class="modal-dialog" role="document">

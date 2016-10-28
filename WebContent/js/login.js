@@ -33,17 +33,13 @@ $("#login-form .btn-default").on('click',function () {
     var group = $(this).attr('value');
     switch (group){
         case 'hr': //choose arrange workers\ welfare
-            $('#theme-list .btn-default[value="1"]').show();
-            $('#theme-list .btn-default[value="2"]').hide();
-            $('#theme-list .btn-default[value="3"]').hide();
-            $('#theme-list .btn-default[value="4"]').show();
+            $('#theme-list .hr').show();
+            $('#theme-list .project-manager').hide();
             $('#set-column').modal('show');
             break;
         case 'pm':
-            $('#theme-list .btn-default[value="1"]').hide();
-            $('#theme-list .btn-default[value="2"]').show();
-            $('#theme-list .btn-default[value="3"]').show();
-            $('#theme-list .btn-default[value="4"]').hide();
+            $('#theme-list .hr').hide();
+            $('#theme-list .project-manager').show();
             $('#set-column').modal('show');
             break;
         case 'eng':

@@ -146,6 +146,11 @@ DB.getColumnsByThemeId = function (chosenThemeId) {
 	return alasql('SELECT c.type, c.cname, c.alias FROM clmntheme as ct, COLS as c WHERE ct.cid=c.id AND tId = ? ;', [chosenThemeId]);
 };
 
+DB.getDormitoryColumns = function () {
+	var sql = 'SELECT emp.id,emp.number, emp.name, emp.sex, emp.position, addr.zip  FROM emp LEFT JOIN addr ON emp.id=addr.emp AND addr.house=17 ';
+	return alasql(sql);
+};
+
 DB.deleteTheme = function (themeid) {
 	alasql('DELETE FROM theme WHERE id=' + themeid);
 	alasql('DELETE FROM clmntheme WHERE tId=' + themeid);
