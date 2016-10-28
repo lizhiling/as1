@@ -1,0 +1,18 @@
+ID,NAME,TEXT
+1,sex,Male
+2,sex,Female
+3,citizenship,PR
+4,citizenship,WP
+5,house,Current
+6,house,Permanent
+7,cohabit,Yes
+8,cohabit,No
+9,care,Yes
+10,care,No
+11,citizenship,Citizen
+12,citizenship,Foreigner
+13,position,Engineer
+14,position,Project Manager
+15,position,Worker
+16,position,HR
+17,house,Dormitory

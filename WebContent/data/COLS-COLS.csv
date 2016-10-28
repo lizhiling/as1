@@ -1,0 +1,34 @@
+id,type,cname,alias
+1,default,number,Number
+2,default,name,Name
+3,emp,sex,Gender
+4,emp,birthday,Birthday
+5,emp,tel,Telephone
+6,emp,ctct_name,Emergency Contact Name
+7,emp,ctct_addr,Emergency Contact Address
+8,emp,ctct_tel,Emergency Contact Tel
+9,emp,pspt_no,Passport No.
+10,emp,pspt_date,Passport Date
+11,emp,pspt_name,Passport Name
+12,emp,citizenship,Citizenship
+13,addr,zip,Zip
+14,addr,state,State
+15,addr,city,City
+16,addr,street,Street
+17,addr,bldg,Building
+18,addr,house,Type of Address
+19,edu,school,School
+20,edu,major,Dep/Div/Major
+21,edu,grad,Graduation
+22,calculate,age,Age
+23,calculate,tax,Tax
+24,calculate,pension,Pension
+25,calculate,insurance,Insurance
+26,calculate,travel_allowance,Travel Allowance
+27,emp,position,Position
+28,family,fname,Family's Name
+29,family,fsex,Family's Gender
+30,family,fbirthday,Family's Birthday
+31,family,relation,Relation
+32,family,cohabit,Cohabit
+33,family,care,Care

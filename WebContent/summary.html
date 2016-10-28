@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <script src="lib/jquery.js"></script>
+    <script src="lib/bootstrap.js"></script>
+    <script src="lib/purl.js"></script>
+    <script src="lib/jquery-ui.js"></script>
+    <script src="lib/alasql.js"></script>
+    <script src="js/db.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>COMPANY</title>
+    <style type="text/css">
+        .warning {
+            font-weight: bold;
+        }
+
+        #training table tr {
+            height: auto;
+            width: 80%;
+        }
+
+        #training table td:last-of-type {
+            width: 50%;
+        }
+
+        #summary {
+            word-wrap: break-word;
+            width: 80%;
+        }
+
+        .selected-training {
+            background-color: rgb(245, 245, 241)
+        }
+
+        #training .label {
+            margin: 30px 5px 60px 0px;
+            font-size: 12px;
+            word-wrap: break-word;
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar-collapse">
+                <span class="sr-only">Toggle navigation</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand">COMPANY</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="">Personal Info Management</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+
+<div class="container">
+    <div id="summary" class="hidden-print">
+        <div class="panel" id="training" hidden>
+            <div>
+                <div id="trainings-list">
+                </div>
+                <h4><span id="new-training-btn" class="btn label label-success" data-toggle="modal"
+                          data-target="#new-training"><span
+                        class="glyphicon glyphicon-plus"></span>&nbsp;New</span></h4>
+                <br>
+                <form>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Position</th>
+                            <th>Major</th>
+                            <th>Number</th>
+                            <th>Training</th>
+                        </tr>
+                    </table>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-default">Apply Funds</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel" id="dormitory" hidden>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Number of Male Worker</th>
+                    <th>Number of Female Worker</th>
+                </tr>
+                <tr>
+                    <td id="male"></td>
+                    <td id="female"></td>
+                </tr>
+            </table>
+            <form>
+                <label for="rental">Rental</label>
+                <div class="input-group">
+                    <div class="input-group-addon">$</div>
+                    <input type="number" class="form-control" id="rental" placeholder="Rental per Room" required>
+                    <div class="input-group-addon">.00</div>
+                </div>
+                <br>
+                <br>
+                <button type="submit" class="btn btn-default">Apply Funds</button>
+            </form>
+        </div>
+
+        <div class="panel" id="party" hidden>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Gender</th>
+                    <th>Age Range</th>
+                    <th>Number</th>
+                    <th>Percentage</th>
+                </tr>
+                <tr>
+                    <td rowspan="3">Male</td>
+                    <td>20-40</td>
+                    <td id="m20"></td>
+                    <td id="m20p"></td>
+                </tr>
+                <tr>
+                    <td>40-60</td>
+                    <td id="m40"></td>
+                    <td id="m40p"></td>
+                </tr>
+                <tr>
+                    <td>60+</td>
+                    <td id="m60"></td>
+                    <td id="m60p"></td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Female</td>
+                    <td>20-40</td>
+                    <td id="f20"></td>
+                    <td id="f20p"></td>
+                </tr>
+                <tr>
+                    <td>40-60</td>
+                    <td id="f40"></td>
+                    <td id="f40p"></td>
+                </tr>
+                <tr>
+                    <td>60+</td>
+                    <td id="f60"></td>
+                    <td id="f60p"></td>
+                </tr>
+            </table>
+            <form>
+                <label for="party-content">Party Content</label>
+                <input type="text" class="form-control" id="party-content" placeholder="Content of staff party"
+                       required><br>
+
+                <label for="party-amount">Amount</label>
+                <div class="input-group">
+                    <div class="input-group-addon">$</div>
+                    <input type="number" class="form-control" id="party-amount" placeholder="Amount per person"
+                           required>
+                    <div class="input-group-addon">.00</div>
+                </div>
+                <br>
+                <br>
+                <button type="submit" class="btn btn-default">Apply Funds</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="funds-apply-form">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Funds Application Form</h3>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-condensed table-bordered">
+                        <tr>
+                            <td class="warning" width="40%">Date</td>
+                            <td id="date" class="active"></td>
+                        </tr>
+                        <tr>
+                            <td class="warning">Intended Purpose</td>
+                            <td id="purpose" class="active"></td>
+                        </tr>
+                        <tr>
+                            <td class="warning">Total Amount ($)</td>
+                            <td id="tamount" class="active"></td>
+                        </tr>
+                        <tr>
+                            <td class="warning">Employee ID</td>
+                            <td class="warning">Amount ($)</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer hidden-print">
+                    <button type="button" class="btn btn-primary" id="print">Print</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="new-training" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add New Training</h4>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <label for="new-training-name">Training Name</label>
+                            <input class="form-control" type="text" id="new-training-name" required><br>
+                            <label for="new-training-description">Description</label>
+                            <textarea class="form-control" id="new-training-description"></textarea><br>
+                            <label for="new-training-amount">Price</label>
+                            <input class="form-control" type="number" id="new-training-amount" required><br>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="save-new-training">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="js/summary.js"></script>
+</body>
+</html>
