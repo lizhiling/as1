@@ -3,11 +3,13 @@
 <head>
 	<script src="lib/jquery.js"></script>
 	<link href="css/bootstrap.css" rel="stylesheet" />
-	<link href="css/simple-sidebar.css" rel="stylesheet">
-	<script src="lib/bootstrap.js"></script>
+	<link href="css/simple-sidebar.css" rel="stylesheet"/>
+	<link href="css/bootstrap-arrow-buttons.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="css/jquery-ui.css">
 	<script src="lib/alasql.js"></script>
 	<script src="lib/purl.js"></script>
 	<script src="lib/jquery-ui.js"></script>
+	<script src="lib/bootstrap.js"></script>
 	<script src="js/unity-functions.js"></script>
 	<script src="js/themes-functions.js"></script>
 	<script src="js/cookie-functions.js"></script>
@@ -18,13 +20,40 @@
 	<meta http-equiv="Cache-Control" content="no-cache">
 	<meta name="viewport" content="width=device-width">
 	<style type="text/css">
-		#emp-list tr.active td{
+		#emp-list tr.active td, #emp-list-wp tr.active td{
+			background-color: rgba(154, 194, 217, 0.25);
+		}
+		.highlighted{
 			background-color: #cae27e !important;
 		}
+
 		.warning{
 			font-weight: bold;
 		}
+		.btn-arrow-right{
+			border: solid 1px #aeaeae !important;
+		}
+
+		.tooltip {
+			background-color:#000;
+			border:1px solid #fff;
+			padding:10px 15px;
+			width:200px;
+			display:none;
+			color:#fff;
+			text-align:left;
+			font-size:12px;
+
+			/* outline radius for mozilla/firefox only */
+			-moz-box-shadow:0 0 10px #000;
+			-webkit-box-shadow:0 0 10px #000;
+		}
+		form .input-group{
+			width: 40% !important;
+		}
+
 	</style>
+	<link href="css/new-column-layout.css" rel="stylesheet"/>
 	<title>COMPANY</title>
 </head>
 <body>
@@ -37,38 +66,32 @@
 				<a href="#">
 					COMPANY
 				</a>
+			</li><br><br><br>
+			<li>
+				<span class="option-title" >Operations</span>
 			</li>
 			<li>
-				<a href="#">Shortcuts</a>
+				<a href="index.html?theme=1" class="option hr" value="1">Calculate welfare</a>
+			</li>
+			<!--<li>-->
+				<!--<a href="index.html?theme=2" class="option" value="2">Plan trainings for new project</a>-->
+			<!--</li>-->
+			<li>
+				<a href="index.html?theme=3" class="option pm" value="3">Hold staff party</a>
 			</li>
 			<li>
-				<a href="#" class="option" value="1">Calculate welfare</a>
-			</li>
-			<li>
-				<a href="#" class="option" value="2">Plan trainings for new project</a>
-			</li>
-			<li>
-				<a href="#" class="option" value="3">Hold staff party</a>
-			</li>
-			<li>
-				<p class="option-title" disabled="true">Arrange new worker</p>
-			</li>
-			<li>
-				<a href="#" class="option" value="4">Arrange dormitory</a>
-			</li>
-			<li>
-				<a href="#" class="option" value="5">Apply Work Pass</a>
+				<a href="index.html?theme=4" class="option hr" value="4">Arrange new worker</a>
 			</li>
 
 			<li>
-			<a href="#">Customize Table Layout</a></li>
+				<a href="#" class="option eng" value="0" onclick="return newLayout();">Customize Table Layout</a></li>
 			<br>
 			<br>
 			<br>
 			<li class="sidebar-footer">
 				<table>
-					<tr><td rowspan="3"><img class="img-circle-lg" src="img\user-default.png"></td><td id="user-group">HR</td></tr>
-					<tr><td><a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></td></tr>
+					<tr><td rowspan="3"><img class="img-circle-lg" src="img\user-default.png"></td><td id="user-group">Engineer</td></tr>
+					<tr><td><a href="login.html" id="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></td></tr>
 					<tr><td><a onclick="DB.init();"><span
 							class="glyphicon glyphicon-repeat"></span> Init DB</a></td></tr>
 				</table>
@@ -85,194 +108,195 @@
 	<!-- Page Content -->
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
-			<div class="container hidden-print">
+			<div class="container">
+				<!--<div class="clearfix" style="margin: 10px 0;">-->
+					<!--<a href="emp-form.html" class="btn btn-sm btn-success pull-right"><span-->
+							<!--class="glyphicon glyphicon-plus"></span> New</a>-->
+				<!--</div>-->
+				<div>
+					<ul class="nav  nav-tabs nav-pills">
+						<li role="presentation" class="active" ><a data-toggle="tab" class="btn btn-default btn-arrow-right arrange-worker apply-wp" href="#emp-list-wp" style="margin-right: 10px">Apply Work Pass</a></li>
+						<li role="presentation" class="active" ><a data-toggle="tab" class="btn btn-default btn-arrow-right travel-allowance decide-party common" href="#emp-list" style="margin-right: 10px">Employee List</a></li>
+						<li role="presentation" ><a data-toggle="tab" class="btn btn-default btn-arrow-right arrange-worker arrange-dormitory" href="#emp-list">Dormitory Status List</a></li>
 
-				<a class="btn btn-primary summary-btn pull-left" id="travel-allowance">Apply Travel Allowance Fees</a>
-				<a class="btn btn-primary summary-btn pull-left" id="decide-training" >Plan Training</a>
-				<a class="btn btn-primary summary-btn pull-left" id="decide-party" >Plan Staff Party</a>
-				<a class="btn btn-primary summary-btn pull-left" id="arrange-dormitory">Arrange Dormitory</a>
-				<a class="btn btn-primary summary-btn pull-left" id="apply-wp" >Apply WP Fees</a>
+						<li role="presentation" ><a data-toggle="tab" class="btn btn-default btn-arrow-right summary-btn arrange-worker arrange-dormitory" href="#dormitory-table" style="margin-right: 10px">Arrange Dormitory</a></li>
+						<li role="presentation" ><a data-toggle="tab" class="btn btn-default btn-arrow-right summary-btn decide-party" href="#party-table" style="margin-right: 10px">Decide Party</a>&nbsp;</li>
 
-				<div class="clearfix" style="margin: 10px 0;">
-					<a href="emp-form.html" class="btn btn-sm btn-success pull-right"><span
-							class="glyphicon glyphicon-plus"></span> New</a>
-				</div>
-
-				<table class="table table-striped table-hover" id="emp-list">
-					<thead>
-					<tr>
-						<th></th>
-						<th>Number</th>
-						<th>Name</th>
-						<th>Gender</th>
-						<th>Date of Birth</th>
-						<th>Telephone</th>
-					</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<!-- /#page-content-wrapper -->
-
-</div>
-
-	<div class="modal fade hidden-print" tabindex="-1" role="dialog" id="dormitory-table">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close " data-dismiss="modal" aria-label="Close"><span
-							aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title">Arrange Dormitory</h3>
-				</div>
-				<div class="modal-body">
-					<div class="panel">
-						<table class="table table-bordered">
+						<li role="presentation" ><a data-toggle="tab" href="#funds-apply-form" class="btn btn-default btn-arrow-right apply-funds arrange-worker" for="arrange-worker">Funds Apply</a></li>
+						<li role="presentation" ><a data-toggle="tab" href="#funds-apply-form" class="btn btn-default btn-arrow-right apply-funds decide-party" for="decide-party" >Funds Apply</a></li>
+						<li role="presentation" ><a data-toggle="tab" href="#funds-apply-form" class="btn btn-default btn-arrow-right apply-funds travel-allowance">Funds Apply</a></li>
+					</ul>
+					<br>
+					<div class="tab-content">
+						<div id="emp-list-wp" class="tab-pane">
+							<table class="table table-striped table-hover">
+							<thead>
 							<tr>
-								<th>Number of Male Worker</th>
-								<th>Number of Female Worker</th>
 							</tr>
-							<tr>
-								<td id="male"></td>
-								<td id="female"></td>
-							</tr>
-						</table><br>
-						<form>
-							<label for="room-size">Number of Person per Room</label>
-							<input type="number" class="form-control" id="room-size" placeholder="Number of Person" required>
-							<br>
-							<label for="rental">Rental</label>
-							<div class="input-group">
-								<div class="input-group-addon">$</div>
-								<input type="number" class="form-control" id="rental" placeholder="Rental per Room" required>
-								<div class="input-group-addon">.00</div>
-							</div>
-							<br>
-							<label for="dormitory-zip">Dormitory Zip</label>
-							<input type="number" class="form-control" id="dormitory-zip" placeholder="Zip Code of Dormitory" required>
-							<br>
-							<button type="submit" class="btn btn-default apply-funds">Apply Funds</button>
-						</form>
-					</div>
-				</div>
-				</div></div></div>
-
-
-
-	<div class="modal fade hidden-print" tabindex="-1" role="dialog" id="party-table">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close " data-dismiss="modal" aria-label="Close"><span
-							aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title">Table Summary</h3>
-				</div>
-				<div class="modal-body">
-					<div class="panel">
-						<table class="table table-bordered">
-							<tr><th>Gender</th><th>Age Range</th><th>Number</th><th>Percentage</th></tr>
-							<tr><td rowspan="3">Male</td><td>20-40</td><td id="m20"></td><td id="m20p"></td></tr>
-							<tr><td>40-60</td><td id="m40"></td><td id="m40p"></td></tr>
-							<tr><td>60+</td><td id="m60"></td><td id="m60p"></td></tr>
-							<tr><td rowspan="3">Female</td><td>20-40</td><td id="f20"></td><td id="f20p"></td></tr>
-							<tr><td>40-60</td><td id="f40"></td><td id="f40p"></td></tr>
-							<tr><td>60+</td><td id="f60"></td><td id="f60p"></td></tr>
+							</thead>
+							<tbody></tbody>
 						</table>
-						<form>
-							<label for="party-content">Party Content</label>
-							<input type="text" class="form-control" id="party-content" placeholder="Content of staff party"
-								   required><br>
+						</div>
 
-							<label for="party-amount">Amount</label>
-							<div class="input-group">
-								<div class="input-group-addon">$</div>
-								<input type="number" class="form-control" id="party-amount" placeholder="Amount per person"
-									   required>
-								<div class="input-group-addon">.00</div>
+						<div id="emp-list" class="tab-pane active">
+							<table class="table table-striped table-hover">
+								<thead>
+								<tr>
+									<th></th>
+									<th>Number</th>
+									<th>Name</th>
+									<th>Gender</th>
+									<th>Date of Birth</th>
+									<th>Telephone</th>
+								</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+
+						<div class="tab-pane fade" id="dormitory-table" table-class="arrange-worker">
+							<div class="panel panel-default">
+								<div class="panel-heading"><h3 class="panel-title">Dormitory Status List Summary</h3></div>
+								<div class="panel-body">
+									<table class="table">
+										<tr>
+											<th>Number of Male Worker</th>
+											<th>Number of Female Worker</th>
+										</tr>
+										<tr>
+											<td id="male"></td>
+											<td id="female"></td>
+										</tr>
+									</table>
+								</div>
+							</div><br><br>
+
+							<div class="panel panel-default">
+								<div class="panel-heading"><h3 class="panel-title">Arrange Dormitory</h3></div>
+								<div class="panel-body">
+									<form>
+										<label for="room-size">Number of Person per Room</label>
+										<div class="input-group"><input type="number" class="form-control" id="room-size" placeholder="Number of Person" required></div>
+										<br>
+										<label for="rental">Rental</label>
+										<div class="input-group">
+											<div class="input-group-addon">$</div>
+											<input type="number" class="form-control" id="rental" placeholder="Rental per Room" required>
+											<div class="input-group-addon">.00</div>
+										</div>
+										<br>
+										<label for="dormitory-zip">Dormitory Zip</label>
+										<input type="number" class="form-control" id="dormitory-zip" placeholder="Zip Code of Dormitory" required>
+										<br>
+									</form>
+								</div>
 							</div>
-							<br>
-							<br>
-							<button type="submit" class="btn btn-default">Apply Funds</button>
-						</form>
+						</div>
+
+						<div class="tab-pane fade" id="party-table" table-class="decide-party">
+
+							<div class="panel panel-default">
+								<div class="panel-heading"><h3 class="panel-title">Employee List Summary</h3></div>
+								<div class="panel-body">
+									<table class="table table-bordered">
+										<tr><th>Gender</th><th>Age Range</th><th>Number</th><th>Percentage</th></tr>
+										<tr><td rowspan="3">Male</td><td>20-40</td><td id="m20"></td><td id="m20p"></td></tr>
+										<tr><td>40-60</td><td id="m40"></td><td id="m40p"></td></tr>
+										<tr><td>60+</td><td id="m60"></td><td id="m60p"></td></tr>
+										<tr><td rowspan="3">Female</td><td>20-40</td><td id="f20"></td><td id="f20p"></td></tr>
+										<tr><td>40-60</td><td id="f40"></td><td id="f40p"></td></tr>
+										<tr><td>60+</td><td id="f60"></td><td id="f60p"></td></tr>
+									</table>
+								</div>
+							</div>
+							<div class="panel panel-default">
+								<div class="panel-heading"><h3 class="panel-title">Decide Staff Party</h3></div>
+								<div class="panel-body">
+									<form>
+										<label for="party-content">Party Content</label>
+										<div class="input-group"><input type="text" class="form-control" id="party-content" placeholder="Content of staff party" required><br></div><br>
+										<label for="party-amount">Amount</label>
+										<div class="input-group">
+											<div class="input-group-addon">$</div>
+											<input type="number" class="form-control" id="party-amount" placeholder="Amount per person" required>
+											<div class="input-group-addon">.00</div>
+										</div>
+										<br>
+										<br>
+									</form>
+								</div>
+							</div>
+						</div>
+
+						<div class="tab-pane fade" role="dialog" id="funds-apply-form">
+							<table class="table table-condensed table-bordered">
+								<tr>
+									<td class="warning" width="40%">Date</td>
+									<td id="date" class="active" colspan="2"></td>
+								</tr>
+								<tr>
+									<td class="warning">Intended Purpose</td>
+									<td id="purpose" class="active" colspan="2"></td>
+								</tr>
+								<tr>
+									<td class="warning">Total Amount ($)</td>
+									<td id="tamount" class="active" colspan="2"></td>
+								</tr>
+								<tr style="height:20px;" ><td colspan='3'></td></tr>
+								<tr>
+									<td class="warning">Employee ID</td>
+									<td class="warning">Amount ($)</td>
+									<td class="warning">Notes</td>
+								</tr>
+							</table>
+							<button type="button" class="btn btn-primary" id="print">Print</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-
-
-	<div class="modal fade" tabindex="-1" role="dialog" id="funds-apply-form">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close"><span
-							aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title">Funds Application Form</h3>
+<div id="new-column-layout" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<!--<div class="modal-header">-->
+			<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+			<!--aria-hidden="true">&times;</span></button>-->
+			<!--<h4 class="modal-title">Choose employee information to view:</h4>-->
+			<!--</div>-->
+			<div class="modal-body">
+				<div id="selected-columns" class="panel panel-default">
+					<div class="panel-heading">Choose employee information to view:</div>
+					<div class="panel-body"></div>
 				</div>
-				<div class="modal-body">
-					<table class="table table-condensed table-bordered">
-						<tr>
-							<td class="warning" width="40%">Date</td>
-							<td id="date" class="active"></td>
-						</tr>
-						<tr>
-							<td class="warning">Intended Purpose</td>
-							<td id="purpose" class="active"></td>
-						</tr>
-						<tr>
-							<td class="warning">Total Amount ($)</td>
-							<td id="tamount" class="active"></td>
-						</tr>
-						<tr style="height:20px;" ><td colspan='2'></td></tr>
-						<tr>
-							<td class="warning">Employee ID</td>
-							<td class="warning">Amount ($)</td>
-						</tr>
-					</table>
+				<div id="select-column">
+					<ul class="nav nav-pills nav-stacked">
+						<li role="presentation"><a  data-toggle="tab" href="#emp-columns">Personal</a></li>
+						<li role="presentation"><a data-toggle="tab" href="#addr-columns">Address</a></li>
+						<li role="presentation"><a data-toggle="tab" href="#family-columns">Family</a></li>
+						<li role="presentation"><a data-toggle="tab" href="#edu-columns">Academic</a></li>
+						<li role="presentation"><a data-toggle="tab" href="#calc-columns">Others</a></li>
+					</ul>
+					<div id="emp-columns">
+					</div>
+					<div id="family-columns">
+					</div>
+					<div id="addr-columns">
+					</div>
+					<div id="edu-columns">
+					</div>
+					<div id="calc-columns">
+					</div>
 				</div>
-				<div class="modal-footer hidden-print">
-					<button type="button" class="btn btn-primary" id="print">Print</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="apply" class="btn btn-success">Next</button>
+			</div>
+		</div>
+	</div>
+</div>
 	<script src="js/index.js"></script>
 </body>
 </html>
 
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-
-<!--<head>-->
-
-	<!--<meta charset="utf-8">-->
-	<!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
-	<!--<meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">-->
-	<!--<meta name="description" content="">-->
-	<!--<meta name="author" content="">-->
-
-	<!--<title>Simple Sidebar - Start Bootstrap Template</title>-->
-
-	<!--&lt;!&ndash; Bootstrap Core CSS &ndash;&gt;-->
-	<!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
-
-	<!--&lt;!&ndash; Custom CSS &ndash;&gt;-->
-
-<!--</head>-->
-
-<!--<body>-->
-
-
-<!--<script>-->
-	<!--$("#menu-toggle").click(function(e) {-->
-		<!--e.preventDefault();-->
-		<!--$("#wrapper").toggleClass("toggled");-->
-	<!--});-->
-<!--</script>-->
-
-<!--</body>-->
-
-<!--</html>-->

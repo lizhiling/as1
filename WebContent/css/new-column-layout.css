@@ -1,0 +1,41 @@
+#new-column-layout .ui-tabs-vertical {
+    width: 100%;
+}
+
+#new-column-layout .ui-tabs-vertical .ui-tabs-nav {
+    padding: .1em .05em .1em .1em;
+    float: left;
+    width: 20%;
+}
+
+#new-column-layout .ui-tabs-vertical .ui-tabs-nav li {
+    clear: left;
+    width: 100%;
+    border-bottom-width: 0.5px !important;
+    border-right-width: 0 !important;
+    margin: 0 -0.5px .05em 0;
+}
+
+/*.ui-tabs-vertical .ui-tabs-nav li a {*/
+/*display: block;*/
+/*}*/
+
+#new-column-layout .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+    padding-bottom: 0;
+    padding-right: .05em;
+    border-right-width: 0.5px;
+}
+
+#new-column-layout .ui-tabs-vertical .ui-tabs-panel {
+    padding: 0.5em;
+    float: right;
+    width: 80%;
+}
+
+.modal {
+    width: 1000px;
+    height: 60%;
+    position: absolute;
+    left: 15%;
+    top:20%;
+}

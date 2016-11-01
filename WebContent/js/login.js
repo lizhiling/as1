@@ -36,72 +36,33 @@ $("#login-form .btn-default").on('click',function () {
             $('#theme-list .hr').show();
             $('#theme-list .project-manager').hide();
             $('#set-column').modal('show');
+            localStorage.setItem('user','hr');
             break;
         case 'pm':
             $('#theme-list .hr').hide();
             $('#theme-list .project-manager').show();
             $('#set-column').modal('show');
+            localStorage.setItem('user','pm');
             break;
         case 'eng':
             loadCreateThemesDialog();
             $('#new-column-layout').modal('show');
+            localStorage.setItem('user','eng');
             break;
     }
 });
 
-
-
-function loadCreateThemesDialog() {
-    $('#select-column div').empty();
-    $('#selected-columns .panel-body').empty();
-    var emp_columns = $('#emp-columns');
-    var addr_columns = $('#addr-columns');
-    var edu_columns = $('#edu-columns');
-    var calc_columns = $('#calc-columns');
-    var family_columns = $('#family-columns');
-    emp_columns.empty();
-    addr_columns.empty();
-    edu_columns.empty();
-    calc_columns.empty();
-    family_columns.empty();
-
-    var columns = alasql('SELECT * FROM COLS');
-    for (var i = 0; i < columns.length; i++) {
-        var column = columns[i];
-        var column_label = $('<button class="btn btn-xs btn-info" value="' + column.id + '">' + column.alias + '</button>');
-        column_label.attr({'alias': column.alias, 'type': column.type, 'cname': column.cname});
-        column_label.css('margin', 2);
-        switch (column.type) {
-            case 'emp':
-                emp_columns.append(column_label);
-                break;
-            case 'addr':
-                addr_columns.append(column_label);
-                break;
-            case 'edu':
-                edu_columns.append(column_label);
-                break;
-            case 'calculate':
-                calc_columns.append(column_label);
-                break;
-            case 'family':
-                family_columns.append(column_label);
-                break;
-            default:
-                break;
-        }
-    }
-
-    $("#select-column").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-    $("#select-column li").removeClass("ui-corner-top").addClass("ui-corner-left");
-
-    $("#new-column-layout .btn-info").on('click', function () {
-        $(this).toggleClass('btn-danger');
-        if ($(this).hasClass('btn-danger')) {
-            $("#selected-columns .panel-body").append("<span class='btn btn-primary btn-xs'>" + $(this).text() + "</span>");
-        } else {
-            $("#selected-columns .panel-body span:contains('" + $(this).text() + "')").remove();
-        }
+$("#apply").on('click', function () {
+    var customized_columns = [];
+    $(".btn-danger").each(function () {
+        customized_columns.push({
+            'type': $(this).attr('type'),
+            'cname': $(this).attr('cname'),
+            'alias': $(this).attr('alias')
+        });
     });
+    setCookie('customized_columns', JSON.stringify(customized_columns));
+    setCookie('theme', 0);
+    var myWindow = window.open("index.html?theme=0", "_self");
+});
 
-}

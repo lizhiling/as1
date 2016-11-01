@@ -30,14 +30,8 @@ function welfareList(){
 
         tr.appendTo(emp_list_tbody);
     }
-
-    $('.summary-btn').hide();
-
-    saveTableContent($("#emp-list tbody"),false);
-    $('#travel-allowance').show().on('click', function () {
-        WelfareForm();
-        $('#funds-apply-form').modal('show');
-    });
+    saveTableContent($("#emp-list"),false);
+    WelfareForm();
 }
 
 function trainingList(){
@@ -78,16 +72,52 @@ function partyList(){
         }
         tr.appendTo(emp_list_tbody);
     }
-    // $('#emp-list tbody tr').on('click', function(event) {
-    //     $(this).toggleClass('active');
-    // });
 
-    $('.summary-btn').hide();
-    saveTableContent($("#emp-list tbody"),true);
-    $('#decide-party').show().on('click', function () {
-        $('#party-table').modal('show');
-        PartySummary();
-    });
+    saveTableContent($("#emp-list"),true);
+    PartySummary();
+}
+
+function workerListForWP(){
+    var emp_list_tbody = $('#emp-list-wp tbody');
+    var emp_list_header = $('#emp-list-wp thead tr');
+    var cols = DB.getColumnsByThemeId(5);
+    emp_list_header.empty().append('<th>Number</th><th>Name</th>');
+    for (var j = 0; j < cols.length; j++) {
+        emp_list_header.append('<th data-column='+j+'>' + cols[j].alias + '</th>');
+    }
+    emp_list_tbody.empty();
+    var emps = DB.selectEmpsInfo(cols);
+    for (var i = 0; i < emps.length; i++) {
+        var emp = emps[i];
+        var tr = $('<tr></tr>');
+        tr.append('<td class="Number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
+        tr.append('<td class="Name">' + emp.name + '</td>');
+        for (var j = 0; j < cols.length; j++) {
+            var td = $("<td></td>");
+            var temp = emp[cols[j].cname];
+            if (cols[j].cname == 'sex') {
+                td.text(DB.choice(emp.sex));
+            } else if (cols[j].cname == 'position') {
+                td.text(DB.choice(emp.position));
+            } else if(cols[j].cname == 'citizenship'){
+                td.text(DB.choice(emp.citizenship));
+            } else if(cols[j].cname=='house'){
+                td.text(DB.choice(emp.house));
+            }
+            else {
+                td.text(temp);
+            }
+            td.attr('data-column', j);
+            td.addClass(cols[j].cname);
+            tr.append(td);
+        }
+        if($(tr).find('.position').text()=='Worker' && $(tr).find('.citizenship').text()=='Foreigner'){
+            $(tr).addClass('active');
+            $(tr).tooltip({title:'Foreign worker'}).tooltip('show');
+        }
+        tr.appendTo(emp_list_tbody);
+    }
+    saveTableContent($("#emp-list-wp"),true);
 }
 
 function workerListForDormitory(){
@@ -95,17 +125,17 @@ function workerListForDormitory(){
     var emp_list_header = $('#emp-list thead tr');
     var cols = [{type: 'emp', cname: 'sex', alias: 'Gender'},
         {type: 'emp', cname: 'position', alias: 'Position'},
-        {type: 'addr', cname: 'zip', alias: 'Dormitory Zip'}];
+        {type: 'addr', cname: 'zip', alias: 'Has Dormitory'}];
     emp_list_header.empty().append('<th></th><th>Number</th><th>Name</th>');
     for (var j = 0; j < cols.length; j++) {
-        emp_list_header.append('<th>' + cols[j].alias + '</th>');
+        emp_list_header.append('<th data-column='+j+'>' + cols[j].alias + '</th>');
     }
     emp_list_tbody.empty();
     var emps = DB.getDormitoryColumns();
     for (var i = 0; i < emps.length; i++) {
         var emp = emps[i];
         var tr = $('<tr></tr>');
-        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
+        tr.append('<td><input type="checkbox"></td>');
         tr.append('<td class="Number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
         tr.append('<td class="Name">' + emp.name + '</td>');
         for (var j = 0; j < cols.length; j++) {
@@ -115,104 +145,77 @@ function workerListForDormitory(){
                 td.text(DB.choice(emp.sex));
             } else if (cols[j].cname == 'position') {
                 td.text(DB.choice(emp.position));
-            }else {
+            } else if(cols[j].cname=='zip'){
+                if(emp.zip ==null){
+                    td.text('No');
+                }else {
+                    td.text('Yes');
+                }
+            }
+            else {
                 td.text(temp);
             }
-            td.addClass(cols[j].alias);
+            td.attr('data-column', j);
+            td.addClass(cols[j].cname);
             tr.append(td);
         }
-        if ($(tr).find('.Position').text()=='Worker' && $(tr).find('.Dormitory').text()==''){
-            tr.addClass('active');
+        if ($(tr).find('.position').text()=='Worker' && $(tr).find('.zip').text()=='No'){
+            $(tr).addClass('active');
+            tr.find('input[type="checkbox"]').prop("checked", true);
         }
         tr.appendTo(emp_list_tbody);
     }
-    // $('#emp-list tbody tr').on('click', function(event) {
-    //     $(this).toggleClass('active');
-    // });
 
-    $('.summary-btn').hide();
-    saveTableContent($("#emp-list tbody"),true);
-    $('#arrange-dormitory').show().on('click', function () {
-        $('#dormitory-table').modal('show');
+    $("td input").on('click', function() {
+        $(this).parent().parent().toggleClass('active');
+        saveTableContent($("#emp-list"),true);
         DormitorySummary();
     });
-
-}
-
-function workerListForWP() {
-    //todo: decide how to combine workerListForDormitory() and workerListForWP()
-    var emp_list_tbody = $('#emp-list tbody');
-    var emp_list_header = $('#emp-list thead tr');
-    var cols = DB.getColumnsByThemeId(5);
-    emp_list_header.empty().append('<th></th><th>Number</th><th>Name</th>');
-    for (var j = 0; j < cols.length; j++) {
-        emp_list_header.append('<th>' + cols[j].alias + '</th>');
-    }
-    emp_list_tbody.empty();
-    var emps = DB.getDormitoryColumns();
-    for (var i = 0; i < emps.length; i++) {
-        var emp = emps[i];
-        var tr = $('<tr></tr>');
-        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
-        tr.append('<td class="Number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
-        tr.append('<td class="Name">' + emp.name + '</td>');
-        for (var j = 0; j < cols.length; j++) {
-            var td = $("<td></td>");
-            var temp = emp[cols[j].cname];
-            if (cols[j].cname == 'sex') {
-                td.text(DB.choice(emp.sex));
-            } else if (cols[j].cname == 'position') {
-                td.text(DB.choice(emp.position));
-            }else {
-                td.text(temp);
-            }
-            td.addClass(cols[j].alias);
-            tr.append(td);
-        }
-        if ($(tr).find('.Position').text()=='Worker' && $(tr).find('.Dormitory').text()==''){
-            tr.addClass('active');
-        }
-        tr.appendTo(emp_list_tbody);
-    }
-    // $('#emp-list tbody tr').on('click', function(event) {
-    //     $(this).toggleClass('active');
-    // });
-
-    $('.summary-btn').hide();
-    saveTableContent($("#emp-list tbody"),true);
-    $('#arrange-dormitory').show().on('click', function () {
-        $('#dormitory-table').modal('show');
-        DormitorySummary();
-    });
-}
-
-function chooseProject() {
-    
+    saveTableContent($("#emp-list"),true);
+    DormitorySummary();
 }
 
 
 function employeeList(themeId){
+    $('.summary-btn').hide();
     switch (themeId){
-        case 1: welfareList(); break;
+        case 1:
+            $(".decide-party,.arrange-worker").hide();
+            $(".travel-allowance").show();
+            welfareList(); break;
         case 2: trainingList(); break;
-        case 3: partyList(); break;
-        case 4: workerListForDormitory(); break;
-        default: customizedList(); break;
+        case 3:
+            $(".travel-allowance,.arrange-worker").hide();
+            $(".decide-party").show();
+            partyList(); break;
+        case 4:
+            $(".travel-allowance,.decide-party").hide();
+            $(".arrange-worker").show();
+            $("#emp-list-wp").addClass('active');
+            $("#emp-list").removeClass('active');
+            workerListForWP();
+            workerListForDormitory();
+            break;
+        default:
+            $(".travel-allowance,.decide-party,.arrange-worker").hide();
+            $("a .common").show();
+            customizedList(); break;
     }
 }
 
 function customizedList() {
-    var cols = getCookie('customized_columns');
+    var cols = JSON.parse(getCookie('customized_columns'));
     var emp_list_tbody = $('#emp-list tbody');
     var emp_list_header = $('#emp-list thead tr');
 
     emp_list_header.empty().append('<th></th><th>Number</th><th>Name</th>');
     for (var j = 0; j < cols.length; j++) {
-        emp_list_header.append('<th>' + cols[j].alias + '</th>');
+        emp_list_header.append('<th>' + cols[j]['alias'] + '</th>');
     }
 
     emp_list_tbody.empty();
     var emps = DB.selectEmpsInfo(cols);
+
     for (var i = 0; i < emps.length; i++) {
         var emp = emps[i];
         var tr = $('<tr></tr>');
@@ -227,7 +230,9 @@ function customizedList() {
                 td.text(DB.choice(emp.citizenship));
             } else if (cols[j].cname == 'position') {
                 td.text(DB.choice(emp.position));
-            } else {
+            } else if (cols[j].cname == 'house') {
+                td.text(DB.choice(emp.house));
+            }else {
                 var temp = emp[cols[j].cname];
                 if (typeof  temp == 'number') {
                     temp = +temp.toFixed(2);
@@ -241,95 +246,56 @@ function customizedList() {
     }
 }
 
-function loadEmpsInfo(cols) {
-    var emp_list_tbody = $('#emp-list tbody');
-    var emp_list_header = $('#emp-list thead tr');
+function loadCreateThemesDialog() {
+    $('#select-column div').empty();
+    $('#selected-columns .panel-body').empty();
+    var emp_columns = $('#emp-columns');
+    var addr_columns = $('#addr-columns');
+    var edu_columns = $('#edu-columns');
+    var calc_columns = $('#calc-columns');
+    var family_columns = $('#family-columns');
+    emp_columns.empty();
+    addr_columns.empty();
+    edu_columns.empty();
+    calc_columns.empty();
+    family_columns.empty();
 
-    emp_list_header.empty().append('<th></th><th>Number</th><th>Name</th>');
-    for (var j = 0; j < cols.length; j++) {
-        emp_list_header.append('<th>' + cols[j].alias + '</th>');
-    }
-
-    emp_list_tbody.empty();
-    var theme_id = parseInt(getCookie("chosen_theme"));
-    var emps = selectEmpsInfo(cols);
-    var preEmp = {grad: '0000-00-00', id: ''};
-    for (var i = 0; i < emps.length; i++) {
-        var emp = emps[i];
-        var tr = $('<tr></tr>');
-        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
-        tr.append('<td class="Number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
-        tr.append('<td class="Name">' + emp.name + '</td>');
-        for (var j = 0; j < cols.length; j++) {
-            var td = $("<td></td>");
-            if (cols[j].cname == 'sex') {
-                td.text(DB.choice(emp.sex));
-            } else if (cols[j].cname == 'citizenship') {
-                td.text(DB.choice(emp.citizenship));
-            } else if (cols[j].cname == 'position') {
-                td.text(DB.choice(emp.position));
-            } else {
-                var temp = emp[cols[j].cname];
-                if (typeof  temp == 'number') {
-                    temp = +temp.toFixed(2);
-                }
-                td.text(temp);
-            }
-            td.addClass(cols[j].alias);
-            tr.append(td);
-        }
-
-        //filter some unnecessary rows
-        switch (theme_id) {
-            case 2://Training: filter education info which is not the latest.
-                if (preEmp.id == emp.id) {
-                    if (preEmp.grad < emp.grad) {
-                        var preTr = emp_list_tbody.children(':last-child');
-                        preTr.remove();
-                        tr.appendTo(emp_list_tbody);
-                    }
-                } else {
-                    tr.appendTo(emp_list_tbody);
-                }
-                preEmp = emp;
+    var columns = alasql('SELECT * FROM COLS');
+    for (var i = 0; i < columns.length; i++) {
+        var column = columns[i];
+        var column_label = $('<button class="btn btn-xs btn-info" value="' + column.id + '">' + column.alias + '</button>');
+        column_label.attr({'alias': column.alias, 'type': column.type, 'cname': column.cname});
+        column_label.css('margin', 2);
+        switch (column.type) {
+            case 'emp':
+                emp_columns.append(column_label);
                 break;
-            case 3://Hold Party: filter position!=worker
-                if (DB.choice(emp.position) != 'Worker')
-                    tr.appendTo(emp_list_tbody);
+            case 'addr':
+                addr_columns.append(column_label);
                 break;
-            case 4://arrange dormitory: filter position==worker && dormitory does not exist.
-                if (DB.choice(emp.position) == 'Worker')
-                    tr.appendTo(emp_list_tbody);
+            case 'edu':
+                edu_columns.append(column_label);
                 break;
-            case 5://apply WP: filter position==worker && citizen=Foreigner
-                console.log(DB.choice(emp.citizenship));
-                if (DB.choice(emp.position) == 'Worker' && DB.choice(emp.citizenship) == 'Foreigner')
-                    tr.appendTo(emp_list_tbody);
+            case 'calculate':
+                calc_columns.append(column_label);
+                break;
+            case 'family':
+                family_columns.append(column_label);
                 break;
             default:
-                tr.appendTo(emp_list_tbody);
                 break;
         }
     }
 
-    //filter unnecessary columns
-    switch (theme_id) {
-        case 1://Welfare: no filter
-            break;
-        case 2:
-            $("th:last-child,td:last-child").remove();
-            break;
-        case 3://Hold Party: hide position
-            $("th:last-child,td:last-child").remove();
-            break;
-        case 4://arrange dormitory: hide position==worker && dormitory
-            $("th:last-child,td:last-child").remove();
-            break;
-        case 5://apply WP: hide position && citizenship
-            $("th:nth-last-child(2),td:nth-last-child(2)").remove();
-            $("th:last-child,td:last-child").remove();
-            break;
-        default:
-            break;
-    }
+    $("#select-column").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+    $("#select-column li").removeClass("ui-corner-top").addClass("ui-corner-left");
+
+    $("#new-column-layout .btn-info").on('click', function () {
+        $(this).toggleClass('btn-danger');
+        if ($(this).hasClass('btn-danger')) {
+            $("#selected-columns .panel-body").append("<span class='btn btn-primary btn-xs'>" + $(this).text() + "</span>");
+        } else {
+            $("#selected-columns .panel-body span:contains('" + $(this).text() + "')").remove();
+        }
+    });
 }

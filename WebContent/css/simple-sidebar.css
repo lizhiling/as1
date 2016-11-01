@@ -72,18 +72,23 @@
     display: block;
     text-decoration: none;
     color: #999999;
+    font-size: 16px;
+}
+
+.sidebar-nav li .option{
+    text-indent: 40px;
 }
 
 
 .sidebar-nav #user-group{
-    font-size: 24px ;
+    font-size: 18px ;
     font-weight: 600;
     color: #999999;
 }
 
 .sidebar-nav li .option-title{
     font-size: 22px;
-    color: #aeaeae;
+    color: #7c7c7c;
 }
 
 .img-circle-lg {
@@ -109,13 +114,15 @@
     text-decoration: none;
 }
 
-.sidebar-nav > .sidebar-brand {
+.sidebar-nav .sidebar-brand a{
+    border-bottom: silver;
+    padding-bottom: 70px;
     height: 65px;
-    font-size: 24px;
+    font-size: 30px;
     line-height: 60px;
 }
 
-.sidebar-nav > .sidebar-brand a {
+.sidebar-nav .sidebar-brand a {
     color: #999999;
 }
 
