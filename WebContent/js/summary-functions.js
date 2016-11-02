@@ -31,10 +31,10 @@ function DormitorySummary() {
         var gender = emp['sex'];
         if (gender == 'Male') {
             maleCount++;
-            maleEmps.push(emp['Number']);
+            maleEmps.push(emp['number']);
         } else if (gender == 'Female') {
             femaleCount++;
-            femaleEmps.push(emp['Number']);
+            femaleEmps.push(emp['number']);
         } else {
             alert(" = = ");
         }
@@ -54,8 +54,8 @@ function PartySummary() {
     var m20 = 0, m40 = 0, m60 = 0, f20 = 0, f40 = 0, f60 = 0;
     for (var i = 0; i < emps.length; i++) {
         var emp = emps[i];
-        var gender = emp['Gender'];
-        var age = parseInt(emp["Age"]);
+        var gender = emp['sex'];
+        var age = parseInt(emp["age"]);
         if (gender == 'Male' && age >= 20 && age < 40) {
             m20++;
         } else if (gender == 'Female' && age >= 20 && age < 40) {
@@ -111,7 +111,7 @@ function PartySummary() {
 //         var emp = emps[i];
 //         var position = emp['Position'];
 //         var major = emp["Dep/Div/Major"];
-//         var number = emp["Number"];
+//         var number = emp["number"];
 //
 //         if (typeof data[position + ',' + major] != 'undefined') {
 //             if (typeof data[position + ',' + major].count != 'undefined') {
@@ -201,8 +201,8 @@ function WelfareForm() {
     var totalAmount = 0;
     for (var i = 0; i < emps.length; i++) {
         var emp = emps[i];
-        var empId = emp['Number'];
-        var amount = parseInt(emp['Travel Allowance']);
+        var empId = emp['number'];
+        var amount = parseInt(emp['travel_allowance']);
         totalAmount += amount;
         appendEmpAmount(empId, amount,'');
     }
@@ -240,7 +240,7 @@ function PartyForm(data) {
     var totalAmount = amount * emps.length;
     for (var i = 0; i < emps.length; i++) {
         var emp = emps[i];
-        var empId = emp['Number'];
+        var empId = emp['number'];
         appendEmpAmount(empId, amount,'');
     }
     $("#tamount").text(totalAmount);
@@ -281,7 +281,7 @@ function DormitoryForm(data) {
     var amount = 30;
     for (var i = 0; i < emps.length; i++) {
         var emp = emps[i];
-        var empId = emp['Number'];
+        var empId = emp['number'];
         totalAmount += amount;
         appendEmpAmount(empId, amount,'Work pass application fees');
     }

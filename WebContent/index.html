@@ -2,10 +2,10 @@
 <html>
 <head>
 	<script src="lib/jquery.js"></script>
-	<link href="css/bootstrap.css" rel="stylesheet" />
-	<link href="css/simple-sidebar.css" rel="stylesheet"/>
-	<link href="css/bootstrap-arrow-buttons.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="css/jquery-ui.css">
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/sidebar.css" rel="stylesheet"/>
+	<link href="css/progress-bar.css" rel="stylesheet"/>
 	<script src="lib/alasql.js"></script>
 	<script src="lib/purl.js"></script>
 	<script src="lib/jquery-ui.js"></script>
@@ -49,9 +49,17 @@
 			-webkit-box-shadow:0 0 10px #000;
 		}
 		form .input-group{
-			width: 40% !important;
+			width: 50%;
 		}
-
+		.container-fluid{
+			position: absolute;
+			left: 10%;
+		}
+		/*.nav-tabs .active + li:not([style*="display: none"]) .btn-arrow-right{*/
+			/*color: #fff;*/
+			/*background-color: #5cb85c;*/
+			/*border-color: #4cae4c;*/
+		/*}*/
 	</style>
 	<link href="css/new-column-layout.css" rel="stylesheet"/>
 	<title>COMPANY</title>
@@ -60,21 +68,21 @@
 
 <div id="wrapper">
 	<!-- Sidebar -->
-	<div id="sidebar-wrapper">
-		<ul class="sidebar-nav">
+	<nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+		<ul class="nav sidebar-nav">
 			<li class="sidebar-brand">
 				<a href="#">
 					COMPANY
-				</a>
-			</li><br><br><br>
+				</a><br><br><br><br>
+			</li>
 			<li>
-				<span class="option-title" >Operations</span>
+				<span class="option-title" >Operations</span><br><br>
 			</li>
 			<li>
 				<a href="index.html?theme=1" class="option hr" value="1">Calculate welfare</a>
 			</li>
 			<!--<li>-->
-				<!--<a href="index.html?theme=2" class="option" value="2">Plan trainings for new project</a>-->
+			<!--<a href="index.html?theme=2" class="option" value="2">Plan trainings for new project</a>-->
 			<!--</li>-->
 			<li>
 				<a href="index.html?theme=3" class="option pm" value="3">Hold staff party</a>
@@ -82,7 +90,6 @@
 			<li>
 				<a href="index.html?theme=4" class="option hr" value="4">Arrange new worker</a>
 			</li>
-
 			<li>
 				<a href="#" class="option eng" value="0" onclick="return newLayout();">Customize Table Layout</a></li>
 			<br>
@@ -96,40 +103,83 @@
 							class="glyphicon glyphicon-repeat"></span> Init DB</a></td></tr>
 				</table>
 			</li>
-			<li>
-
-			</li>
-			<li></li>
 		</ul>
-	</div>
-</div>
+	</nav>
 	<!-- /#sidebar-wrapper -->
 
 	<!-- Page Content -->
 	<div id="page-content-wrapper">
+		<button type="button" class="hamburger is-closed" data-toggle="offcanvas">
+			<span class="hamb-top"></span>
+			<span class="hamb-middle"></span>
+			<span class="hamb-bottom"></span>
+		</button>
 		<div class="container-fluid">
+
 			<div class="container">
+				<div class="row bs-wizard" style="border-bottom:0; position: relative; left: -100px;">
+
+					<div class="col-xs-3 bs-wizard-step active arrange-worker apply-wp first-step">
+						<div class="text-center bs-wizard-stepnum">Apply Work Pass</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#emp-list-wp" class="bs-wizard-dot "></a>
+					</div>
+
+					<div class="col-xs-3 bs-wizard-step active travel-allowance decide-party common first-step"><!-- complete -->
+						<div class="text-center bs-wizard-stepnum">Employee List</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#emp-list" class="bs-wizard-dot"></a>
+					</div>
+
+					<div class="col-xs-3 bs-wizard-step disabled arrange-worker arrange-dormitory"><!-- complete -->
+						<div class="text-center bs-wizard-stepnum">Select workers to arrange dormitory</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#emp-list" class="bs-wizard-dot"></a>
+					</div>
+
+					<div class="col-xs-3 bs-wizard-step disabled arrange-worker arrange-dormitory"><!-- complete -->
+						<div class="text-center bs-wizard-stepnum">Arrange dormitory</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#dormitory-table" class="bs-wizard-dot"></a>
+					</div>
+
+					<div class="col-xs-3 bs-wizard-step disabled decide-party"><!-- complete -->
+						<div class="text-center bs-wizard-stepnum">Decide staff party</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#party-table" class="bs-wizard-dot"></a>
+					</div>
+
+					<div class="col-xs-3 bs-wizard-step disabled apply-funds arrange-worker last-step"><!-- complete -->
+						<div class="text-center bs-wizard-stepnum">Apply funds</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#funds-apply-form" class="bs-wizard-dot"></a>
+					</div>
+
+					<div class="col-xs-3 bs-wizard-step disabled apply-funds decide-party last-step"><!-- complete -->
+						<div class="text-center bs-wizard-stepnum">Apply funds</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#funds-apply-form" class="bs-wizard-dot"></a>
+					</div>
+
+					<div class="col-xs-3 bs-wizard-step disabled apply-funds travel-allowance last-step"><!-- complete -->
+						<div class="text-center bs-wizard-stepnum">Apply funds</div><div class="progress"><div class="progress-bar"></div></div>
+						<a href="#funds-apply-form" class="bs-wizard-dot"></a>
+					</div>
+				</div><br><br>
 				<!--<div class="clearfix" style="margin: 10px 0;">-->
 					<!--<a href="emp-form.html" class="btn btn-sm btn-success pull-right"><span-->
 							<!--class="glyphicon glyphicon-plus"></span> New</a>-->
 				<!--</div>-->
 				<div>
-					<ul class="nav  nav-tabs nav-pills">
-						<li role="presentation" class="active" ><a data-toggle="tab" class="btn btn-default btn-arrow-right arrange-worker apply-wp" href="#emp-list-wp" style="margin-right: 10px">Apply Work Pass</a></li>
-						<li role="presentation" class="active" ><a data-toggle="tab" class="btn btn-default btn-arrow-right travel-allowance decide-party common" href="#emp-list" style="margin-right: 10px">Employee List</a></li>
-						<li role="presentation" ><a data-toggle="tab" class="btn btn-default btn-arrow-right arrange-worker arrange-dormitory" href="#emp-list">Dormitory Status List</a></li>
+					<ul class="nav nav-tabs" hidden>
+						<li role="presentation" class="active arrange-worker apply-wp" ><a data-toggle="tab"  href="#emp-list-wp" >Apply Work Pass</a></li>
+						<li role="presentation" class="active travel-allowance decide-party common" ><a data-toggle="tab"  href="#emp-list" >Employee List</a></li>
+						<li role="presentation" class="arrange-worker arrange-dormitory"><a data-toggle="tab"  href="#emp-list">Dormitory Status List</a></li>
 
-						<li role="presentation" ><a data-toggle="tab" class="btn btn-default btn-arrow-right summary-btn arrange-worker arrange-dormitory" href="#dormitory-table" style="margin-right: 10px">Arrange Dormitory</a></li>
-						<li role="presentation" ><a data-toggle="tab" class="btn btn-default btn-arrow-right summary-btn decide-party" href="#party-table" style="margin-right: 10px">Decide Party</a>&nbsp;</li>
+						<li role="presentation" class="arrange-worker arrange-dormitory summary-btn"><a data-toggle="tab" href="#dormitory-table" >Arrange Dormitory</a></li>
+						<li role="presentation" class="summary-btn decide-party"><a data-toggle="tab"  href="#party-table" >Decide Party</a>&nbsp;</li>
 
-						<li role="presentation" ><a data-toggle="tab" href="#funds-apply-form" class="btn btn-default btn-arrow-right apply-funds arrange-worker" for="arrange-worker">Funds Apply</a></li>
-						<li role="presentation" ><a data-toggle="tab" href="#funds-apply-form" class="btn btn-default btn-arrow-right apply-funds decide-party" for="decide-party" >Funds Apply</a></li>
-						<li role="presentation" ><a data-toggle="tab" href="#funds-apply-form" class="btn btn-default btn-arrow-right apply-funds travel-allowance">Funds Apply</a></li>
+						<li role="presentation" class="apply-funds arrange-worker"><a data-toggle="tab" href="#funds-apply-form"  for="arrange-worker">Funds Apply</a></li>
+						<li role="presentation" class="apply-funds decide-party"><a data-toggle="tab" href="#funds-apply-form"  for="decide-party" >Funds Apply</a></li>
+						<li role="presentation" class="apply-funds travel-allowance"><a data-toggle="tab" href="#funds-apply-form" >Funds Apply</a></li>
 					</ul>
 					<br>
 					<div class="tab-content">
 						<div id="emp-list-wp" class="tab-pane">
-							<table class="table table-striped table-hover">
+							<table class="table table-hover">
 							<thead>
 							<tr>
 							</tr>
@@ -139,7 +189,7 @@
 						</div>
 
 						<div id="emp-list" class="tab-pane active">
-							<table class="table table-striped table-hover">
+							<table class="table table-hover">
 								<thead>
 								<tr>
 									<th></th>
@@ -154,7 +204,7 @@
 							</table>
 						</div>
 
-						<div class="tab-pane fade" id="dormitory-table" table-class="arrange-worker">
+						<div class="tab-pane" id="dormitory-table" table-class="arrange-worker">
 							<div class="panel panel-default">
 								<div class="panel-heading"><h3 class="panel-title">Dormitory Status List Summary</h3></div>
 								<div class="panel-body">
@@ -186,14 +236,14 @@
 										</div>
 										<br>
 										<label for="dormitory-zip">Dormitory Zip</label>
-										<input type="number" class="form-control" id="dormitory-zip" placeholder="Zip Code of Dormitory" required>
+										<div class="input-group"><input type="number" class="form-control" id="dormitory-zip" placeholder="Zip Code of Dormitory" required></div>
 										<br>
 									</form>
 								</div>
 							</div>
 						</div>
 
-						<div class="tab-pane fade" id="party-table" table-class="decide-party">
+						<div class="tab-pane" id="party-table" table-class="decide-party">
 
 							<div class="panel panel-default">
 								<div class="panel-heading"><h3 class="panel-title">Employee List Summary</h3></div>
@@ -228,7 +278,7 @@
 							</div>
 						</div>
 
-						<div class="tab-pane fade" role="dialog" id="funds-apply-form">
+						<div class="tab-pane" role="dialog" id="funds-apply-form">
 							<table class="table table-condensed table-bordered">
 								<tr>
 									<td class="warning" width="40%">Date</td>
@@ -252,6 +302,11 @@
 							<button type="button" class="btn btn-primary" id="print">Print</button>
 						</div>
 					</div>
+
+					<div class="pull-right">
+						<button class="btn" id="prevtab" type="button" disabled style="margin-bottom: 100px; margin-top:30px;width: 100px" > Prev  </button>
+						<button class="btn btn-primary" id="nexttab" type="button" style="margin-bottom: 100px; margin-top:30px;margin-left:10px;;width: 100px" >  Next  </button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -260,14 +315,14 @@
 <div id="new-column-layout" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
-			<!--<div class="modal-header">-->
-			<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
-			<!--aria-hidden="true">&times;</span></button>-->
+			<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+			aria-hidden="true">&times;</span></button>
 			<!--<h4 class="modal-title">Choose employee information to view:</h4>-->
-			<!--</div>-->
+			</div>
 			<div class="modal-body">
 				<div id="selected-columns" class="panel panel-default">
-					<div class="panel-heading">Choose employee information to view:</div>
+					<div class="panel-heading">Choose employee information columns to view:</div>
 					<div class="panel-body"></div>
 				</div>
 				<div id="select-column">
@@ -295,6 +350,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 	<script src="js/index.js"></script>
 </body>
