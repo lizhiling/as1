@@ -2,7 +2,7 @@
  * Created by li_zhil on 10/28/2016.
  */
 
-function welfareList(){
+function welfareList(q1, q2){
     var emp_list_tbody = $('#emp-list tbody');
     var emp_list_header = $('#emp-list thead tr');
     var cols = DB.getColumnsByThemeId(1);
@@ -11,24 +11,33 @@ function welfareList(){
         emp_list_header.append('<th class="'+cols[j].cname+'">' + cols[j].alias + '</th>');
     }
     emp_list_tbody.empty();
-    var emps = DB.selectEmpsInfo(cols);
-    for (var i = 0; i < emps.length; i++) {
-        var emp = emps[i];
-        var tr = $('<tr></tr>');
-        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
-        tr.append('<td class="number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
-        tr.append('<td class="name">' + emp.name + '</td>');
-        for (var j = 0; j < cols.length; j++) {
-            var td = $("<td></td>");
-            var temp = emp[cols[j].cname];
-            if (typeof  temp == 'number') {
-                temp = +temp.toFixed(2);
-            }
-            td.addClass(cols[j].cname).text(temp);
-            tr.append(td);
-        }
+    var emps = DB.selectEmpsInfo(cols, q1, q2);
 
+    for(var id in emps){
+        var values = emps[id];
+        var tr = $('<tr></tr>');
         tr.appendTo(emp_list_tbody);
+
+        var value = values[0];
+        $('<td class=""><img height=40 class="img-circle" src="img/' + id + '.jpg"></td>').appendTo(tr);
+        $('<td class="number"><a href="emp.html?id=' + id + '">' + value.number + '</a></td>').appendTo(tr);
+        tr.append('<td class="name">' + value.name + '</td>');
+        for(var j = 0; j < cols.length; j++){
+            var column = cols[j].cname;
+            var td = $("<td></td>");
+            td.attr('class',column);
+            tr.append(td);
+
+            if (column == 'sex' || column=='citizenship' || column=='position'||column=='house'||column=='fsex') {
+                td.text(DB.choice(value[column]));
+            } else {
+                var temp = value[column];
+                if (typeof  temp == 'number') {
+                    temp = +temp.toFixed(2);
+                }
+                td.text(temp);
+            }
+        }
     }
     saveTableContent($("#emp-list"),false);
     WelfareForm();
@@ -38,46 +47,59 @@ function trainingList(){
 
 }
 
-function partyList(){
+function partyList(q1, q2){
     var emp_list_tbody = $('#emp-list tbody');
     var emp_list_header = $('#emp-list thead tr');
-    var cols = DB.getColumnsByThemeId(3);
+    var cols = DB.getColumnsByThemeId(3);;
     emp_list_header.empty().append('<th></th><th class="number">Number</th><th class="name">Name</th>');
     for (var j = 0; j < cols.length; j++) {
         emp_list_header.append('<th class="'+cols[j].cname+'">' + cols[j].alias + '</th>');
     }
+    emp_list_header.append('<th></th>');
     emp_list_tbody.empty();
-    var emps = DB.selectEmpsInfo(cols);
-    for (var i = 0; i < emps.length; i++) {
-        var emp = emps[i];
+    var emps = DB.selectEmpsInfo(cols,q1, q2);
+    for(var id in emps){
+        var values = emps[id];
         var tr = $('<tr></tr>');
-        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
-        tr.append('<td class="number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
-        tr.append('<td class="name">' + emp.name + '</td>');
-        for (var j = 0; j < cols.length; j++) {
+
+        var value = values[0];
+        $('<td class=""><img height=40 class="img-circle" src="img/' + id + '.jpg"></td>').appendTo(tr);
+        $('<td class="number"><a href="emp.html?id=' + id + '">' + value.number + '</a></td>').appendTo(tr);
+        tr.append('<td class="name">' + value.name + '</td>');
+        for(var j = 0; j < cols.length; j++){
+            var column = cols[j].cname;
             var td = $("<td></td>");
-            var temp = emp[cols[j].cname];
-            if (cols[j].cname == 'sex') {
-                td.text(DB.choice(emp.sex));
-            } else if (cols[j].cname == 'position') {
-                td.text(DB.choice(emp.position));
-            }else {
+            td.attr('class',column);
+            tr.append(td);
+
+            if (column == 'sex' || column=='citizenship' || column=='position'||column=='house'||column=='fsex') {
+                td.text(DB.choice(value[column]));
+            } else {
+                var temp = value[column];
+                if (typeof  temp == 'number') {
+                    temp = +temp.toFixed(2);
+                }
                 td.text(temp);
             }
-            td.addClass(cols[j].cname);
-            tr.append(td);
         }
+        tr.append($('<td><input type="checkbox"></td>'));
         if ($(tr).find('.position').text()!='Worker'){
             tr.addClass('active');
+            tr.find('input[type="checkbox"]').prop("checked", true);
         }
         tr.appendTo(emp_list_tbody);
     }
+    $('td input[type="checkbox"]').on('click', function() {
+        $(this).parent().parent().toggleClass('active');
+        saveTableContent($("#emp-list"),true);
+        PartySummary();
+    });
 
     saveTableContent($("#emp-list"),true);
     PartySummary();
 }
 
-function workerListForWP(){
+function workerListForWP(q1, q2){
     var emp_list_tbody = $('#emp-list-wp tbody');
     var emp_list_header = $('#emp-list-wp thead tr');
     var cols = DB.getColumnsByThemeId(5);
@@ -86,29 +108,29 @@ function workerListForWP(){
         emp_list_header.append('<th class='+cols[j].cname+'>' + cols[j].alias + '</th>');
     }
     emp_list_tbody.empty();
-    var emps = DB.selectEmpsInfo(cols);
-    for (var i = 0; i < emps.length; i++) {
-        var emp = emps[i];
+    var emps = DB.selectEmpsInfoWP(cols,q1, q2);
+    for(var id in emps){
+        var values = emps[id];
         var tr = $('<tr></tr>');
-        tr.append('<td class="number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
-        tr.append('<td class="name">' + emp.name + '</td>');
-        for (var j = 0; j < cols.length; j++) {
+
+        var value = values[0];
+        $('<td class="number"><a href="emp.html?id=' + id + '">' + value.number + '</a></td>').appendTo(tr);
+        tr.append('<td class="name">' + value.name + '</td>');
+        for(var j = 0; j < cols.length; j++){
+            var column = cols[j].cname;
             var td = $("<td></td>");
-            var temp = emp[cols[j].cname];
-            if (cols[j].cname == 'sex') {
-                td.text(DB.choice(emp.sex));
-            } else if (cols[j].cname == 'position') {
-                td.text(DB.choice(emp.position));
-            } else if(cols[j].cname == 'citizenship'){
-                td.text(DB.choice(emp.citizenship));
-            } else if(cols[j].cname=='house'){
-                td.text(DB.choice(emp.house));
-            }
-            else {
+            td.attr('class',column);
+            tr.append(td);
+
+            if (column == 'sex' || column=='citizenship' || column=='position'||column=='house'||column=='fsex') {
+                td.text(DB.choice(value[column]));
+            } else {
+                var temp = value[column];
+                if (typeof  temp == 'number') {
+                    temp = +temp.toFixed(2);
+                }
                 td.text(temp);
             }
-            td.addClass(cols[j].cname);
-            tr.append(td);
         }
         if($(tr).find('.position').text()=='Worker' && $(tr).find('.citizenship').text()=='Foreigner'){
             $(tr).addClass('active');
@@ -119,44 +141,47 @@ function workerListForWP(){
     saveTableContent($("#emp-list-wp"),true);
 }
 
-function workerListForDormitory(){
+function workerListForDormitory(q1, q2){
     var emp_list_tbody = $('#emp-list tbody');
     var emp_list_header = $('#emp-list thead tr');
     var cols = [{type: 'emp', cname: 'sex', alias: 'Gender'},
         {type: 'emp', cname: 'position', alias: 'Position'},
         {type: 'addr', cname: 'zip', alias: 'Has Dormitory'}];
-    emp_list_header.empty().append('<th></th><th class="number">Number</th><th class="name">Name</th>');
+    emp_list_header.empty().append('<th class="number">Number</th><th class="name">Name</th>');
     for (var j = 0; j < cols.length; j++) {
         emp_list_header.append('<th class='+cols[j].cname+'>' + cols[j].alias + '</th>');
     }
+    emp_list_header.append('<th></th>');
     emp_list_tbody.empty();
-    var emps = DB.getDormitoryColumns();
-    for (var i = 0; i < emps.length; i++) {
-        var emp = emps[i];
+    var emps = DB.getDormitoryColumns(q1, q2);
+    for(var id in emps){
+        var value= emps[id];
         var tr = $('<tr></tr>');
-        tr.append('<td><input type="checkbox"></td>');
-        tr.append('<td class="number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
-        tr.append('<td class="name">' + emp.name + '</td>');
-        for (var j = 0; j < cols.length; j++) {
+        $('<td class="number"><a href="emp.html?id=' + id + '">' + value.number + '</a></td>').appendTo(tr);
+        tr.append('<td class="name">' + value.name + '</td>');
+        for(var j = 0; j < cols.length; j++){
+            var column = cols[j].cname;
             var td = $("<td></td>");
-            var temp = emp[cols[j].cname];
-            if (cols[j].cname == 'sex') {
-                td.text(DB.choice(emp.sex));
-            } else if (cols[j].cname == 'position') {
-                td.text(DB.choice(emp.position));
+            td.attr('class',column);
+            tr.append(td);
+
+            if (column == 'sex' || column=='citizenship' || column=='position'||column=='house'||column=='fsex') {
+                td.text(DB.choice(value[column]));
             } else if(cols[j].cname=='zip'){
-                if(emp.zip ==null){
+                if(value[column] ==null){
                     td.text('No');
                 }else {
                     td.text('Yes');
                 }
-            }
-            else {
+            }else {
+                var temp = value[column];
+                if (typeof  temp == 'number') {
+                    temp = +temp.toFixed(2);
+                }
                 td.text(temp);
             }
-            td.addClass(cols[j].cname);
-            tr.append(td);
         }
+        tr.append('<td><input type="checkbox"></td>');
         if ($(tr).find('.position').text()=='Worker' && $(tr).find('.zip').text()=='No'){
             $(tr).addClass('active');
             tr.find('input[type="checkbox"]').prop("checked", true);
@@ -174,83 +199,97 @@ function workerListForDormitory(){
 }
 
 
-function employeeList(themeId){
+function employeeList(themeId, q1, q2, q1_wp, q2_wp){
     $('.summary-btn').hide();
+    $('#prevtab').show();
+    $('#nexttab').show();
+    $(".decide-party,.arrange-worker,.travel-allowance").hide();
     switch (themeId){
         case 1:
             $(".nav-tabs .decide-party").removeClass('available');
             $(".nav-tabs .arrange-worker").removeClass('available');
             $(".nav-tabs .travel-allowance").addClass('available');
-            $(".decide-party,.arrange-worker").hide();
             $(".travel-allowance").show();
-            welfareList(); break;
-        case 2: trainingList(); break;
+            welfareList(q1, q2); break;
+        case 2: trainingList(q1, q2); break;
         case 3:
             $(".nav-tabs .travel-allowance").removeClass('available');
             $(".nav-tabs .arrange-worker").removeClass('available');
             $(".nav-tabs .decide-party").addClass('available');
-            $(".travel-allowance,.arrange-worker").hide();
             $(".decide-party").show();
-            partyList(); break;
+            partyList(q1, q2); break;
         case 4:
             $("#emp-list-wp").addClass('active');
             $("#emp-list").removeClass('active');
             $(".nav-tabs .decide-party").removeClass('available');
             $(".nav-tabs .travel-allowance").removeClass('available');
             $(".nav-tabs .arrange-worker").addClass('available');
-            $(".travel-allowance,.decide-party").hide();
             $(".arrange-worker").show();
-            workerListForWP();
-            workerListForDormitory();
+            workerListForWP(q1_wp, q2_wp);
+            workerListForDormitory(q1, q2);
             break;
         default:
-            $(".travel-allowance,.decide-party,.arrange-worker").hide();
             $("a .common").show();
-            customizedList(); break;
+            $('#prevtab').hide();
+            $('#nexttab').hide();
+            customizedList(q1, q2); break;
     }
 }
-
-function customizedList() {
+var multiAllowedInfo = ['fname','fsex','fbirthday','relation','cohabit','care'];
+function customizedList(q1, q2) {
+    if (getCookie('customized_columns') == null) {
+        var customized_columns = [{type: 'emp', cname: 'sex', alias: 'Gender'},
+            {type: 'emp', cname: 'birthday', alias: 'Birthday'},
+            {type: 'emp', cname: 'tel', alias: 'Telephone'}];
+        setCookie('customized_columns', JSON.stringify(customized_columns));
+    }
     var cols = JSON.parse(getCookie('customized_columns'));
     var emp_list_tbody = $('#emp-list tbody');
     var emp_list_header = $('#emp-list thead tr');
 
-    emp_list_header.empty().append('<th></th><th class="number">Number</classth><th class="name">Name</th>');
+    emp_list_header.empty().append('<th></th><th>Number</th>');
     for (var j = 0; j < cols.length; j++) {
         emp_list_header.append('<th class="'+cols[j].cname+'">' + cols[j]['alias'] + '</th>');
     }
 
     emp_list_tbody.empty();
-    var emps = DB.selectEmpsInfo(cols);
+    var emps = DB.selectEmpsInfo(cols,q1, q2);
+    for(var id in emps){
+        var values = emps[id];
+        for(var i=0; i<values.length; i++){
+            var tr = $('<tr></tr>');
+            tr.appendTo(emp_list_tbody);
 
-    for (var i = 0; i < emps.length; i++) {
-        var emp = emps[i];
-        var tr = $('<tr></tr>');
-        tr.append('<td class=""><img height=40 class="img-circle" src="img/' + emp.id + '.jpg"></td>');
-        tr.append('<td class="number"><a href="emp.html?id=' + emp.id + '">' + emp.number + '</a></td>');
-        tr.append('<td class="name">' + emp.name + '</td>');
-        for (var j = 0; j < cols.length; j++) {
-            var td = $("<td></td>");
-            if (cols[j].cname == 'sex') {
-                td.text(DB.choice(emp.sex));
-            } else if (cols[j].cname == 'citizenship') {
-                td.text(DB.choice(emp.citizenship));
-            } else if (cols[j].cname == 'position') {
-                td.text(DB.choice(emp.position));
-            } else if (cols[j].cname == 'house') {
-                td.text(DB.choice(emp.house));
-            }else {
-                var temp = emp[cols[j].cname];
-                if (typeof  temp == 'number') {
-                    temp = +temp.toFixed(2);
-                }
-                td.text(temp);
+            var value = values[i];
+            if(i==0){
+                $('<td class=""><img height=40 class="img-circle" src="img/' + id + '.jpg"></td>').attr('rowspan',values.length).appendTo(tr);
+                $('<td class="number"><a href="emp.html?id=' + id + '">' + value.number + '</a></td>').attr('rowspan',values.length).appendTo(tr);
             }
-            td.addClass(cols[j].cname);
-            tr.append(td);
+
+            for(var j = 0; j < cols.length; j++){
+                var column = cols[j].cname;
+                var td = $("<td></td>");
+
+                if((multiAllowedInfo.indexOf(column) > -1) && values.length>1){
+                    td.attr('rowspan',1);
+                    tr.append(td);
+                }else if(i == 0){
+                    td.attr('rowspan',values.length);
+                    tr.append(td);
+                }
+                if (column == 'sex' || column=='citizenship' || column=='position'||column=='house'||column=='fsex') {
+                    td.text(DB.choice(value[column]));
+                } else {
+                    var temp = value[column];
+                    if (typeof  temp == 'number') {
+                        temp = +temp.toFixed(2);
+                    }
+                    td.text(temp);
+                }
+            }
+
         }
-        tr.appendTo(emp_list_tbody);
-    }
+     }
 }
 
 function loadCreateThemesDialog() {
@@ -280,7 +319,7 @@ function loadCreateThemesDialog() {
             case 'addr':
                 addr_columns.append(column_label);
                 break;
-            case 'edu':
+            case 'eduLatest':
                 edu_columns.append(column_label);
                 break;
             case 'calculate':

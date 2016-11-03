@@ -1,4 +1,4 @@
-$(document).ready(function () {
+
 	var trigger = $('.hamburger');
 	var	isClosed = false;
 
@@ -31,7 +31,7 @@ $(document).ready(function () {
 		$('#user-group').text('Engineer');
 
 	var theme = getParam('theme');
-	employeeList(parseInt(theme));
+	employeeList(parseInt(theme),'', '','','');
 	loadCreateThemesDialog();
 
 	progressBar();
@@ -56,11 +56,15 @@ $(document).ready(function () {
     //
 	// });
 
-	$('#print').on('click',function () {
-		window.print();
+	$('button:contains("Search")').on('click',function () {
+		var tabs = $('.nav-tabs .available');
+		var now = $('.bs-wizard-step:visible a[href="'+$(tabs).filter('.active').find('a[data-toggle="tab"]').attr('href')+'"]');
+		employeeList(parseInt(getParam('theme')),$('#q1').val(),$('#q2').val(),$('#q1-wp').val(),$('#q2-wp').val());
+		now.tab('show');
 	});
 
-});
+
+
 
 //------------------------------------------functions-----------------------------------------------//
 
@@ -96,9 +100,13 @@ function progressBar() {
 	var tabs = $('.nav-tabs .available');
 	$('.bs-wizard-stepnum').hide();
 	$('.bs-wizard-step.active:visible .bs-wizard-stepnum').show();
+	if($('.bs-wizard-step.active:visible').hasClass('last-step')){
+		$('#nexttab').text('  Print  ');
+	}
 
 	$('#prevtab,#nexttab').on('click', function() {
 		var now = $('.bs-wizard-step:visible a[href="'+$(tabs).filter('.active').find('a[data-toggle="tab"]').attr('href')+'"]');
+
 		var prev  = $(tabs).filter('.active').prevAll('.available')[0];
 		var next  = $(tabs).filter('.active').nextAll('.available')[0];
 		var preva = $(prev).find('a[data-toggle="tab"]');
@@ -114,6 +122,10 @@ function progressBar() {
 			$(now).parent().toggleClass('active').toggleClass('disabled');
 			preva.tab('show');
 		}else{
+			if($(now).parent().hasClass('last-step')){
+				window.print();
+				return 0;
+			}
 			newStep = $('.bs-wizard-step:visible a[href="'+nexta.attr('href')+'"]');
 			if(!checkForm(newStep)){
 				return 0;
@@ -128,10 +140,10 @@ function progressBar() {
 			$('#prevtab').prop('disabled', true);
 		}
 		if(!newStep.parent().hasClass('last-step')){
-			$('#nexttab').prop('disabled', false);
+			$('#nexttab').text('  Next  ');
 		}
 		if(newStep.parent().hasClass('last-step')){
-			$('#nexttab').prop('disabled', true);
+			$('#nexttab').text('  Print  ');
 		}
 		if(!newStep.parent().hasClass('first-step')){
 			$('#prevtab').prop('disabled', false);

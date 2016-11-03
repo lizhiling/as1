@@ -117,7 +117,7 @@
 		<div class="container-fluid">
 
 			<div class="container">
-				<div class="row bs-wizard" style="border-bottom:0; position: relative; left: -100px;">
+				<div class="row bs-wizard hidden-print" style="border-bottom:0; position: relative; left: -100px;">
 
 					<div class="col-xs-3 bs-wizard-step active arrange-worker apply-wp first-step">
 						<div class="text-center bs-wizard-stepnum">Apply Work Pass</div><div class="progress"><div class="progress-bar"></div></div>
@@ -179,6 +179,17 @@
 					<br>
 					<div class="tab-content">
 						<div id="emp-list-wp" class="tab-pane">
+							<form class="form-inline text-center">
+								<div class="form-group">
+									<input id="q1-wp" type="text" class="form-control" placeholder="employee number">
+								</div>
+								<div class="form-group">
+									<input id="q2-wp" type="text" class="form-control" placeholder="part of name">
+								</div>
+								<button type="button" class="btn btn-primary">
+									<span class="glyphicon glyphicon-search"></span> Search
+								</button>
+							</form><br><br>
 							<table class="table table-hover">
 							<thead>
 							<tr>
@@ -189,6 +200,17 @@
 						</div>
 
 						<div id="emp-list" class="tab-pane active">
+							<form class="form-inline text-center">
+								<div class="form-group">
+									<input id="q1" type="text" class="form-control" placeholder="employee number">
+								</div>
+								<div class="form-group">
+									<input id="q2" type="text" class="form-control" placeholder="part of name">
+								</div>
+								<button type="button" class="btn btn-primary">
+									<span class="glyphicon glyphicon-search"></span> Search
+								</button>
+							</form><br><br>
 							<table class="table table-hover">
 								<thead>
 								<tr>
@@ -299,12 +321,11 @@
 									<td class="warning">Notes</td>
 								</tr>
 							</table>
-							<button type="button" class="btn btn-primary" id="print">Print</button>
 						</div>
 					</div>
 
-					<div class="pull-right">
-						<button class="btn" id="prevtab" type="button" disabled style="margin-bottom: 100px; margin-top:30px;width: 100px" > Prev  </button>
+					<div class="pull-right hidden-print">
+						<button class="btn" id="prevtab" type="button" disabled style="margin-bottom: 100px; margin-top:30px;width: 100px" >  Prev  </button>
 						<button class="btn btn-primary" id="nexttab" type="button" style="margin-bottom: 100px; margin-top:30px;margin-left:10px;;width: 100px" >  Next  </button>
 					</div>
 				</div>

@@ -47,6 +47,7 @@ DB.load = function() {
 	});
 
 
+
 	// choice
 	alasql('DROP TABLE IF EXISTS choice;');
 	alasql('CREATE TABLE choice(id INT IDENTITY, name STRING, text STRING);');
@@ -93,6 +94,10 @@ DB.load = function() {
 	//calculate
 	alasql('DROP TABLE IF EXISTS calculate;');
 	alasql('CREATE TABLE calculate(emp INT IDENTITY primary key, age INT, tax FLOAT, pension FLOAT, insurance FLOAT, travel_allowance FLOAT);');
+
+	// eduLatest
+	alasql('DROP TABLE IF EXISTS eduLatest;');
+	alasql('CREATE TABLE eduLatest(id INT IDENTITY, emp INT, school STRING, major STRING, grad STRING);');
 
 	// training
 	alasql('DROP TABLE IF EXISTS training;');
@@ -146,8 +151,18 @@ DB.getColumnsByThemeId = function (chosenThemeId) {
 	return alasql('SELECT c.type, c.cname, c.alias FROM clmntheme as ct, COLS as c WHERE ct.cid=c.id AND tId = ? ;', [chosenThemeId]);
 };
 
-DB.getDormitoryColumns = function () {
-	var sql = 'SELECT emp.id,emp.number, emp.name, emp.sex, emp.position, addr.zip  FROM emp LEFT JOIN addr ON emp.id=addr.emp AND addr.house=17 ';
+DB.getDormitoryColumns = function (q1, q2) {
+	$('#q1').val(q1);
+	$('#q2').val(q2);
+	var WHERE;
+	if (q1) {
+		WHERE = ' WHERE emp.number LIKE ' + '"%' + q1 + '%"';
+	} else if (q2) {
+		WHERE = ' WHERE emp.name LIKE ' + '"%' + q2 + '%"';
+	} else {
+		WHERE = '';
+	}
+	var sql = 'SELECT emp.id,emp.number, emp.name, emp.sex, emp.position, addr.zip  FROM emp LEFT JOIN addr ON emp.id=addr.emp AND addr.house=17 '+WHERE;
 	return alasql(sql);
 };
 
@@ -204,6 +219,13 @@ function generateCalculateData() {
 		var temp = [idBirth.id, age, tax, ins, pension, tAllowance];
 		alasql('insert into calculate values(?,?,?,?,?,?);', temp);
 	}
+	var notLatest = alasql("SELECT t1.id FROM edu t1, edu t2 WHERE t1.grad< t2.grad AND t2.emp= t1.emp");
+	alasql('INSERT INTO eduLatest SELECT * FROM edu');
+
+	for(var i = 0; i<notLatest.length;i++){
+		alasql('DELETE FROM eduLatest WHERE id='+notLatest[i]['id']);
+	}
+	console.log(alasql('SELECT * FROM eduLatest'));
 }
 
 DB.trainings = function () {
@@ -222,14 +244,79 @@ DB.deleteTraining = function (id) {
 	return alasql("DELETE FROM training WHERE id=" + id);
 };
 
-DB.selectEmpsInfo = function (cols) {
+DB.selectEmpsInfoWP = function(cols,q1_wp,q2_wp){
+	$('#q1-wp').val(q1_wp);
+	$('#q2-wp').val(q2_wp);
+	// read data from database
+	var FROM = ' FROM emp LEFT JOIN calculate ON calculate.emp=emp.id  LEFT JOIN addr ON emp.id=addr.emp ';
+	var GROUPBY = ['emp.id', 'emp.number', 'emp.name'];
+	var FIRST = [];
+	var hasAddr = false;
+	for (var i = 0; i < cols.length; i++) {
+		if (cols[i].type == 'addr') {
+			FIRST.push(' first('+cols[i].type + '.' + cols[i].cname+') as '+cols[i].cname);
+		} else{
+			GROUPBY.push(cols[i].type + '.' + cols[i].cname);
+		}
+	}
+	var SORT = ' ORDER BY emp.id ASC';
+	var WHERE;
+	if (q1_wp) {
+		WHERE = ' WHERE emp.number LIKE ' + '"%' + q1_wp + '%"';
+	} else if (q2_wp) {
+		WHERE = ' WHERE emp.name LIKE ' + '"%' + q2_wp + '%"';
+	} else {
+		WHERE = '';
+	}
+	FIRST = ','+FIRST.join(',');
+	var query = 'SELECT '+GROUPBY.join(',') + FIRST + FROM + WHERE + ' GROUP BY '+GROUPBY.join(',') +SORT;
+	console.log(query);
+	var result = alasql(query, []);
+	var jsonResult = {};
+	for(var i = 0; i<result.length; i++){
+		var row = result[i];var jsonRowArray; var jsonRow={};
+		// if(jsonResult[row['id']] == null){
+			jsonResult[row['id']] = [];
+		// }
+		jsonRowArray = jsonResult[row['id']];
+		for (var key in row){
+			if(key!='id'){
+				var value = row[key];
+				jsonRow[key] = value;
+			}
+		}
+		jsonRowArray.push(jsonRow);
+	}
+	return jsonResult;
+};
+
+DB.selectEmpsInfo = function (cols, q1, q2) {
 	// parse request params
-	var q1 = $.url().param('q1');
-	$('input[name="q1"]').val(q1);
-	var q2 = $.url().param('q2');
-	$('input[name="q2"]').val(q2);
+	$('#q1').val(q1);
+	$('#q2').val(q2);
 
 	// read data from database
+	var FROM = ' FROM emp LEFT JOIN calculate ON calculate.emp=emp.id ';
+    var GROUPBY = ['emp.id', 'emp.number', 'emp.name'];
+	var FIRST = [];
+	var hasFamily = false;
+	var hasAddr = false;
+	var hasEdu = false;
+	for (var i = 0; i < cols.length; i++) {
+		if (cols[i].type == 'family') {
+			GROUPBY.push(cols[i].type + '.' + cols[i].cname);
+			hasFamily = true;
+		} else if (cols[i].type == 'addr') {
+			FIRST.push(' first('+cols[i].type + '.' + cols[i].cname+') as '+cols[i].cname);
+			hasAddr = true;
+		} else if (cols[i].type == 'eduLatest') {
+			GROUPBY.push(cols[i].type + '.' + cols[i].cname);
+			hasEdu = true;
+		} else{
+			GROUPBY.push(cols[i].type + '.' + cols[i].cname);
+		}
+	}
+	var SORT = ' ORDER BY emp.id ASC';
 	var WHERE;
 	if (q1) {
 		WHERE = ' WHERE emp.number LIKE ' + '"%' + q1 + '%"';
@@ -238,22 +325,31 @@ DB.selectEmpsInfo = function (cols) {
 	} else {
 		WHERE = '';
 	}
-
-	var SELECT = ['emp.id', 'emp.number', 'emp.name'];
-	var FROM = 'FROM emp LEFT JOIN calculate ON calculate.emp=emp.id ';
-
-	for (var i = 0; i < cols.length; i++) {
-		SELECT.push(cols[i].type + '.' + cols[i].cname);
-		if (cols[i].type == 'family') {
-			FROM += ' LEFT JOIN family ON emp.id=family.emp ';
-		} else if (cols[i].type == 'addr') {
-			FROM += ' LEFT JOIN addr ON emp.id=addr.emp ';
-		} else if (cols[i].type == 'edu') {
-			FROM += ' LEFT JOIN edu ON emp.id=edu.emp ';
-		}
+	if (hasFamily) {
+		FROM += ' LEFT JOIN family ON emp.id=family.emp ';}
+	if (hasAddr) {
+		FROM += ' LEFT JOIN addr ON emp.id=addr.emp ';}
+	if (hasEdu) {
+		FROM += ' LEFT JOIN eduLatest ON emp.id=eduLatest.emp ';
 	}
-	if (cols)
-		var SORT = 'ORDER BY emp.id ASC';
-	var query = 'SELECT ' + [SELECT.join(',')] + ' ' + FROM + WHERE + SORT;
-	return alasql(query, []);
+	FIRST = FIRST.length==0?' ':','+FIRST.join(',');
+	var query = 'SELECT '+GROUPBY.join(',') + FIRST + FROM + WHERE + ' GROUP BY '+GROUPBY.join(',') +SORT;
+	console.log(query);
+	var result = alasql(query, []);
+	var jsonResult = {};
+	for(var i = 0; i<result.length; i++){
+		var row = result[i];var jsonRowArray; var jsonRow={};
+		if(jsonResult[row['id']] == null){
+			jsonResult[row['id']] = [];
+		}
+		jsonRowArray = jsonResult[row['id']];
+		for (var key in row){
+			if(key!='id'){
+				var value = row[key];
+				jsonRow[key] = value;
+			}
+		}
+		jsonRowArray.push(jsonRow);
+	}
+	return jsonResult;
 };

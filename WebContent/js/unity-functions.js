@@ -22,6 +22,7 @@ function insertParam(key, value) {
         //this will reload the page, it's likely better to store this until finished
         document.location.search = kvp.join('&');
     }
+    return document.location.search;
 }
 
 function getParam(key){

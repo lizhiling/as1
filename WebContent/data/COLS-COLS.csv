@@ -1,6 +1,6 @@
 id,type,cname,alias
 1,default,number,Number
-2,default,name,Name
+2,emp,name,Name
 3,emp,sex,Gender
 4,emp,birthday,Birthday
 5,emp,tel,Telephone
@@ -17,9 +17,9 @@ id,type,cname,alias
 16,addr,street,Street
 17,addr,bldg,Building
 18,addr,house,Type of Address
-19,edu,school,School
-20,edu,major,Dep/Div/Major
-21,edu,grad,Graduation
+19,eduLatest,school,School
+20,eduLatest,major,Dep/Div/Major
+21,eduLatest,grad,Graduation
 22,calculate,age,Age
 23,calculate,tax,Tax
 24,calculate,pension,Pension

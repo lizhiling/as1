@@ -9,7 +9,7 @@ $('#theme-list .btn-default').on('click', function () {
     var url = 'index.html';
     switch (chosenThemeId){
         case 0: // none of above
-            $("#new-column-layout").modal('show');
+            url += '?theme=0';
             break;
         case 1: //show welfare
             url += '?theme=1';
@@ -26,27 +26,27 @@ $('#theme-list .btn-default').on('click', function () {
         default:
             break;
     }
-    var myWindow = window.open(url, "_self");
+    window.open(url, "_self");
 });
 
 $("#login-form .btn-default").on('click',function () {
     var group = $(this).attr('value');
+    $('#theme-list div').hide();
+    $('#theme-list .common').show();
     switch (group){
         case 'hr': //choose arrange workers\ welfare
             $('#theme-list .hr').show();
-            $('#theme-list .project-manager').hide();
             $('#set-column').modal('show');
             localStorage.setItem('user','hr');
             break;
         case 'pm':
-            $('#theme-list .hr').hide();
             $('#theme-list .project-manager').show();
             $('#set-column').modal('show');
             localStorage.setItem('user','pm');
             break;
         case 'eng':
-            loadCreateThemesDialog();
-            $('#new-column-layout').modal('show');
+            $('#theme-list .eng').show();
+            $('#set-column').modal('show');
             localStorage.setItem('user','eng');
             break;
     }
